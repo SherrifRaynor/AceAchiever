@@ -45,9 +45,7 @@ public class Reminder {
     public void setTitle(String title) {
         this.title = title;
     }
-
     
-
     public String getDate() {
         return date;
     }
@@ -63,6 +61,4 @@ public class Reminder {
     public void setNote(String note) {
         this.note = note;
     }
-    
-    
 }
