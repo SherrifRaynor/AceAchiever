@@ -19,8 +19,7 @@ import java.util.List;
  * @author sherr
  */
 public class ControllerTeacher {
-
-    ConnectionManager conMan = new ConnectionManager();
+ConnectionManager conMan = new ConnectionManager();
     Connection connect = conMan.LogOn();
 
     // Create a new teacher

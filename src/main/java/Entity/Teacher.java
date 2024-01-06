@@ -84,7 +84,4 @@ public class Teacher {
     public void setImage(byte[] image) {
         this.image = image;
     }
-    
-    
-    
 }
