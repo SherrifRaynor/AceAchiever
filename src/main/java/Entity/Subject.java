@@ -5,19 +5,19 @@ package Entity;
 public class Subject {
     private int id_subject;
     private int id_akun;
-    private String nama;
-    private int bobot;
-    private String ruangan;
+    private String name;
+    private int weight;
+    private String room;
 
     public Subject() {
     }
 
-    public Subject(int id_akun, String nama, int bobot, String ruangan) {
-    this.id_akun = id_akun;
-    this.nama = nama;
-    this.bobot = bobot;
-    this.ruangan = ruangan;
-}
+    public Subject(int id_akun, String name, int weight, String room) {
+        this.id_akun = id_akun;
+        this.name = name;
+        this.weight = weight;
+        this.room = room;
+    }
 
     public int getId_subject() {
         return id_subject;
@@ -35,29 +35,33 @@ public class Subject {
         this.id_akun = id_akun;
     }
 
-    public String getNama() {
-        return nama;
+    public String getName() {
+        return name;
     }
 
-    public void setNama(String nama) {
-        this.nama = nama;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public int getBobot() {
-        return bobot;
+    public int getWeight() {
+        return weight;
     }
 
-    public void setBobot(int bobot) {
-        this.bobot = bobot;
+    public void setWeight(int weight) {
+        this.weight = weight;
     }
 
-    public String getRuangan() {
-        return ruangan;
+    public String getRoom() {
+        return room;
     }
 
-    public void setRuangan(String ruangan) {
-        this.ruangan = ruangan;
+    public void setRoom(String room) {
+        this.room = room;
     }
+
+    
+
+    
 
     
 

@@ -4,15 +4,12 @@
  */
 package GUI;
 
-import Controller.ControllerHomework;
+import Controller.ControllerGrade;
 import Controller.ControllerSubject;
+import Entity.Grade;
 import Utilities.UserSessionManager;
-import Entity.Homework;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
@@ -24,29 +21,24 @@ import javax.swing.table.TableModel;
  *
  * @author sherr
  */
-public class GuiHomework extends javax.swing.JFrame {
+public class GuiGrades extends javax.swing.JFrame {
 
-    ControllerHomework conHomework = new ControllerHomework();
+    ControllerGrade conGrade = new ControllerGrade();
     private final DefaultTableModel model;
 
     /**
-     * Creates new form GuiHomework
+     * Creates new form GuiGrades
      */
-    public GuiHomework() {
+    public GuiGrades() {
         initComponents();
         setLocationRelativeTo(null);
 
         // Initialize the table model
-        model = (DefaultTableModel) tabelHomework.getModel();
-
-        tabelHomework.setModel(model);
-
-        cmbSubject.setSelectedItem(null);
-
-        
+        model = (DefaultTableModel) tabelGrade.getModel();
 
         // Inisialisasi combo box
         DefaultComboBoxModel<String> cmbModel = new DefaultComboBoxModel<>();
+
         cmbSubject.setModel(cmbModel);
 
         // Mengisi combo box dengan judul mata pelajaran
@@ -55,32 +47,32 @@ public class GuiHomework extends javax.swing.JFrame {
         for (String title : subjectTitles) {
             cmbModel.addElement(title);
         }
-        
-        tabelHomework.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-        tabelHomework.setRowHeight(40);
+
+        tabelGrade.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        tabelGrade.setRowHeight(40);
 
         getData();
         refreshTable();
-        
+
         // Add FocusListener to clear the text field when it gains focus
-        txtTitle.addFocusListener(new FocusListener() {
+        txtGrade.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                String currentText = txtTitle.getText();
-                if (currentText.equals("Add a title") || currentText.isEmpty()) {
-                    txtTitle.setText(null);
+                String currentText = txtGrade.getText();
+                if (currentText.equals("Add a grade") || currentText.isEmpty()) {
+                    txtGrade.setText(null);
                 }
             }
 
             @Override
             public void focusLost(FocusEvent e) {
-                String currentText = txtTitle.getText();
+                String currentText = txtGrade.getText();
                 if (currentText.isEmpty()) {
-                    txtTitle.setText("Add a title");
+                    txtGrade.setText("Add a grade");
                 }
             }
         });
-        
+
         // Add FocusListener to clear the text field when it gains focus
         txtNote.addFocusListener(new FocusListener() {
             @Override
@@ -99,31 +91,13 @@ public class GuiHomework extends javax.swing.JFrame {
                 }
             }
         });
-        
-        tabelHomework.setRowHeight(40);
-        
-    }
 
-    private void getData() {
-        DefaultTableModel dtm = (DefaultTableModel) tabelHomework.getModel();
-        dtm.setRowCount(0);
-
-        // Get the current user's id_akun and current subject's id_subject
-        int userId = UserSessionManager.getCurrentUserId();
-
-        List<Homework> listHomework = conHomework.getAllHomeworks(userId);
-
-        for (Homework newHomework : listHomework) {
-            String subjectName = conHomework.getSubjectNameById(userId, newHomework.getId_subject());
-            dtm.addRow(new Object[]{newHomework.getId_homework(), newHomework.getTitle(), newHomework.getDate(), subjectName, newHomework.getNote()});
-        }
     }
 
     private void clearData() {
-        txtId.setText("");
-        txtTitle.setText("");
-        dcDate.setCalendar(null);
+        txtGrade.setText("");
         cmbSubject.setSelectedItem(null);
+        bgTerm.clearSelection();
         txtNote.setText("");
     }
 
@@ -132,12 +106,28 @@ public class GuiHomework extends javax.swing.JFrame {
         model.setRowCount(0);
 
         int userId = UserSessionManager.getCurrentUserId();
-        List<Homework> listHomework = conHomework.getAllHomeworks(userId);
+        List<Grade> listGrade = conGrade.getAllGrade(userId);
 
-        for (Homework homework : listHomework) {
-            String subjectName = conHomework.getSubjectNameById(userId, homework.getId_subject());
-            Object[] rowData = {homework.getId_homework(), homework.getTitle(), homework.getDate(), subjectName, homework.getNote()};
+        for (Grade grade : listGrade) {
+            String subjectName = conGrade.getSubjectNameById(userId, grade.getId_subject());
+            String term = grade.getTerm();
+            Object[] rowData = {grade.getId_grade(), grade.getGrade(), subjectName, term, grade.getNote()};
             model.addRow(rowData);
+        }
+    }
+
+    private void getData() {
+        DefaultTableModel dtm = (DefaultTableModel) tabelGrade.getModel();
+        dtm.setRowCount(0);
+
+        // Get the current user's id_akun and current subject's id_subject
+        int userId = UserSessionManager.getCurrentUserId();
+
+        List<Grade> listGrade = conGrade.getAllGrade(userId);
+
+        for (Grade newGrade : listGrade) {
+            String subjectName = conGrade.getSubjectNameById(userId, newGrade.getId_subject());
+            dtm.addRow(new Object[]{newGrade.getId_grade(), newGrade.getGrade(), subjectName, newGrade.getTerm(), newGrade.getNote()});
         }
     }
 
@@ -148,99 +138,103 @@ public class GuiHomework extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        bgTerm = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
+        txtId = new javax.swing.JTextField();
+        txtGrade = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        txtTitle = new javax.swing.JTextField();
-        txtNote = new javax.swing.JTextField();
         cmbSubject = new javax.swing.JComboBox<>();
+        txtNote = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
         btnSave = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tabelHomework = new javax.swing.JTable();
-        txtId = new javax.swing.JTextField();
-        jLabel6 = new javax.swing.JLabel();
-        dcDate = new com.toedter.calendar.JDateChooser();
+        tabelGrade = new javax.swing.JTable();
+        rb1stTerm = new javax.swing.JRadioButton();
+        rb2ndTerm = new javax.swing.JRadioButton();
         lblBack = new javax.swing.JLabel();
         lblUpdate = new javax.swing.JLabel();
         lblDelete = new javax.swing.JLabel();
-        jSeparator1 = new javax.swing.JSeparator();
         jSeparator2 = new javax.swing.JSeparator();
         jSeparator3 = new javax.swing.JSeparator();
         jSeparator4 = new javax.swing.JSeparator();
         jSeparator5 = new javax.swing.JSeparator();
-        jSeparator6 = new javax.swing.JSeparator();
+        jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
+        jSeparator6 = new javax.swing.JSeparator();
+        jSeparator7 = new javax.swing.JSeparator();
         lblClear = new javax.swing.JLabel();
+        btnSummary = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel1.setBackground(new java.awt.Color(126, 123, 158));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel1.setFont(new java.awt.Font("Lato", 1, 24)); // NOI18N
-        jLabel1.setText("Homework");
-        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(259, 12, -1, -1));
+        jLabel1.setText("Grades");
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 10, -1, -1));
 
-        jLabel2.setFont(new java.awt.Font("Lato", 0, 12)); // NOI18N
-        jLabel2.setIcon(new javax.swing.ImageIcon("D:\\Semester 3\\Projek UAS OOP\\icons library\\Icon Pack User Interface (Flat Gradient)\\homework 24px (surang lineal).png")); // NOI18N
-        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 140, -1, -1));
+        txtId.setEditable(false);
+        txtId.setBackground(new java.awt.Color(126, 123, 158));
+        txtId.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jPanel1.add(txtId, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 90, 50, 20));
+
+        txtGrade.setBackground(new java.awt.Color(126, 123, 158));
+        txtGrade.setFont(new java.awt.Font("Lato", 0, 12)); // NOI18N
+        txtGrade.setText("Add a grade");
+        txtGrade.setBorder(null);
+        jPanel1.add(txtGrade, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 150, 220, 30));
+
+        jLabel2.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
+        jLabel2.setText("ID");
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 90, -1, -1));
 
         jLabel3.setFont(new java.awt.Font("Lato", 0, 12)); // NOI18N
-        jLabel3.setIcon(new javax.swing.ImageIcon("D:\\Semester 3\\Projek UAS OOP\\icons library\\Icon Pack User Interface (Flat Gradient)\\date 24px ( super basic ).png")); // NOI18N
-        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 200, -1, -1));
+        jLabel3.setIcon(new javax.swing.ImageIcon("D:\\Semester 3\\Projek UAS OOP\\icons library\\Icon Pack User Interface (Flat Gradient)\\Grade 24px(UICONS).png")); // NOI18N
+        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 150, -1, -1));
 
-        jLabel4.setFont(new java.awt.Font("Lato", 0, 12)); // NOI18N
-        jLabel4.setIcon(new javax.swing.ImageIcon("D:\\Semester 3\\Projek UAS OOP\\icons library\\Icon Pack User Interface (Flat Gradient)\\subject 24px (Mikan933 Detailed outline).png")); // NOI18N
-        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 270, -1, -1));
+        jLabel4.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
+        jLabel4.setText("Pick a term");
+        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 120, -1, -1));
 
         jLabel5.setFont(new java.awt.Font("Lato", 0, 12)); // NOI18N
-        jLabel5.setIcon(new javax.swing.ImageIcon("D:\\Semester 3\\Projek UAS OOP\\icons library\\Icon Pack User Interface (Flat Gradient)\\note 24px ( uicons).png")); // NOI18N
-        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 340, -1, -1));
+        jLabel5.setText("Pick a subject");
+        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 190, -1, 30));
 
-        txtTitle.setBackground(new java.awt.Color(126, 123, 158));
-        txtTitle.setFont(new java.awt.Font("Lato", 0, 12)); // NOI18N
-        txtTitle.setText("Add a title");
-        txtTitle.setBorder(null);
-        txtTitle.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtTitleActionPerformed(evt);
-            }
-        });
-        jPanel1.add(txtTitle, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 140, 204, 30));
+        cmbSubject.setBackground(new java.awt.Color(126, 123, 158));
+        cmbSubject.setFont(new java.awt.Font("Lato", 0, 12)); // NOI18N
+        cmbSubject.setForeground(new java.awt.Color(126, 123, 158));
+        cmbSubject.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cmbSubject.setBorder(null);
+        jPanel1.add(cmbSubject, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 220, 170, 30));
 
         txtNote.setBackground(new java.awt.Color(126, 123, 158));
         txtNote.setFont(new java.awt.Font("Lato", 0, 12)); // NOI18N
         txtNote.setText("Add a note");
         txtNote.setBorder(null);
-        jPanel1.add(txtNote, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 340, 180, 30));
+        jPanel1.add(txtNote, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 280, 160, 30));
 
-        cmbSubject.setBackground(new java.awt.Color(126, 123, 158));
-        cmbSubject.setFont(new java.awt.Font("Lato", 0, 12)); // NOI18N
-        cmbSubject.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        cmbSubject.setBorder(null);
-        jPanel1.add(cmbSubject, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 270, 201, 30));
+        jLabel6.setFont(new java.awt.Font("Lato", 0, 12)); // NOI18N
+        jLabel6.setIcon(new javax.swing.ImageIcon("D:\\Semester 3\\Projek UAS OOP\\icons library\\Icon Pack User Interface (Flat Gradient)\\note 24px ( uicons).png")); // NOI18N
+        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 280, -1, -1));
 
         btnSave.setBackground(new java.awt.Color(56, 63, 104));
         btnSave.setFont(new java.awt.Font("Lato", 0, 12)); // NOI18N
+        btnSave.setForeground(new java.awt.Color(0, 0, 0));
         btnSave.setText("Save");
-        btnSave.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnSaveMouseClicked(evt);
-            }
-        });
         btnSave.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSaveActionPerformed(evt);
             }
         });
-        jPanel1.add(btnSave, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 19, -1, 30));
+        jPanel1.add(btnSave, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 20, -1, 30));
 
-        tabelHomework.setFont(new java.awt.Font("Lato", 0, 12)); // NOI18N
-        tabelHomework.setModel(new javax.swing.table.DefaultTableModel(
+        tabelGrade.setFont(new java.awt.Font("Lato", 0, 12)); // NOI18N
+        tabelGrade.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null},
                 {null, null, null, null, null},
@@ -248,29 +242,31 @@ public class GuiHomework extends javax.swing.JFrame {
                 {null, null, null, null, null}
             },
             new String [] {
-                "ID", "Title", "Date", "Subject", "Note"
+                "ID", "Grade", "Subject", "Term", "Note"
             }
         ));
-        tabelHomework.addMouseListener(new java.awt.event.MouseAdapter() {
+        tabelGrade.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tabelHomeworkMouseClicked(evt);
+                tabelGradeMouseClicked(evt);
             }
         });
-        jScrollPane1.setViewportView(tabelHomework);
+        jScrollPane1.setViewportView(tabelGrade);
 
-        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 416, 688, 328));
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 390, 700, 360));
 
-        txtId.setEditable(false);
-        txtId.setBackground(new java.awt.Color(126, 123, 158));
-        txtId.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jPanel1.add(txtId, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 90, 50, -1));
+        rb1stTerm.setBackground(new java.awt.Color(126, 123, 158));
+        bgTerm.add(rb1stTerm);
+        rb1stTerm.setFont(new java.awt.Font("Lato", 0, 12)); // NOI18N
+        rb1stTerm.setText("1st Term");
+        rb1stTerm.setBorder(null);
+        jPanel1.add(rb1stTerm, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 150, 90, 30));
 
-        jLabel6.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        jLabel6.setText("ID");
-        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 80, -1, -1));
-
-        dcDate.setBackground(new java.awt.Color(126, 123, 158));
-        jPanel1.add(dcDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 200, 110, 30));
+        rb2ndTerm.setBackground(new java.awt.Color(126, 123, 158));
+        bgTerm.add(rb2ndTerm);
+        rb2ndTerm.setFont(new java.awt.Font("Lato", 0, 12)); // NOI18N
+        rb2ndTerm.setText("2nd Term");
+        rb2ndTerm.setBorder(null);
+        jPanel1.add(rb2ndTerm, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 180, 90, 30));
 
         lblBack.setIcon(new javax.swing.ImageIcon("D:\\Semester 3\\Projek UAS OOP\\icons library\\Icon Pack User Interface (Flat Gradient)\\back icon (bharat icons basic).png")); // NOI18N
         lblBack.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -278,7 +274,7 @@ public class GuiHomework extends javax.swing.JFrame {
                 lblBackMouseClicked(evt);
             }
         });
-        jPanel1.add(lblBack, new org.netbeans.lib.awtextra.AbsoluteConstraints(26, 6, -1, -1));
+        jPanel1.add(lblBack, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
 
         lblUpdate.setIcon(new javax.swing.ImageIcon("D:\\Semester 3\\Projek UAS OOP\\icons library\\Icon Pack User Interface (Flat Gradient)\\pencil 24px(special flat).png")); // NOI18N
         lblUpdate.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -286,7 +282,7 @@ public class GuiHomework extends javax.swing.JFrame {
                 lblUpdateMouseClicked(evt);
             }
         });
-        jPanel1.add(lblUpdate, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 360, -1, -1));
+        jPanel1.add(lblUpdate, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 330, -1, -1));
 
         lblDelete.setIcon(new javax.swing.ImageIcon("D:\\Semester 3\\Projek UAS OOP\\icons library\\Icon Pack User Interface (Flat Gradient)\\trash 24px( bqlqn lineal).png")); // NOI18N
         lblDelete.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -294,28 +290,31 @@ public class GuiHomework extends javax.swing.JFrame {
                 lblDeleteMouseClicked(evt);
             }
         });
-        jPanel1.add(lblDelete, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 360, -1, -1));
-
-        jSeparator1.setForeground(new java.awt.Color(250, 236, 226));
-        jPanel1.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 380, 410, 10));
+        jPanel1.add(lblDelete, new org.netbeans.lib.awtextra.AbsoluteConstraints(660, 330, -1, -1));
 
         jSeparator2.setForeground(new java.awt.Color(250, 236, 226));
-        jPanel1.add(jSeparator2, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 70, 410, 10));
+        jPanel1.add(jSeparator2, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 70, 460, 10));
 
         jSeparator3.setForeground(new java.awt.Color(250, 236, 226));
-        jPanel1.add(jSeparator3, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 120, 330, 10));
+        jPanel1.add(jSeparator3, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 130, 230, 10));
 
         jSeparator4.setForeground(new java.awt.Color(250, 236, 226));
-        jPanel1.add(jSeparator4, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 180, 310, 10));
+        jPanel1.add(jSeparator4, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 260, 230, 10));
 
         jSeparator5.setForeground(new java.awt.Color(250, 236, 226));
-        jPanel1.add(jSeparator5, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 250, 310, 10));
+        jPanel1.add(jSeparator5, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 320, 470, 10));
+
+        jLabel7.setIcon(new javax.swing.ImageIcon("D:\\Semester 3\\Projek UAS OOP\\icons library\\Icon Pack User Interface (Flat Gradient)\\subject 24px (Mikan933 Detailed outline).png")); // NOI18N
+        jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 220, -1, -1));
+
+        jLabel8.setIcon(new javax.swing.ImageIcon("D:\\Semester 3\\Projek UAS OOP\\icons library\\Stickers\\Grade 128px (Tomomi The Cat Lineal Color).png")); // NOI18N
+        jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 110, -1, -1));
 
         jSeparator6.setForeground(new java.awt.Color(250, 236, 226));
-        jPanel1.add(jSeparator6, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 320, 350, 10));
+        jPanel1.add(jSeparator6, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 190, 230, 10));
 
-        jLabel8.setIcon(new javax.swing.ImageIcon("D:\\Semester 3\\Projek UAS OOP\\icons library\\Stickers\\Homework 256px ( Detailed Flat Circular Flat.png")); // NOI18N
-        jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 90, -1, -1));
+        jSeparator7.setForeground(new java.awt.Color(250, 236, 226));
+        jPanel1.add(jSeparator7, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 260, 230, 10));
 
         lblClear.setBackground(new java.awt.Color(126, 123, 158));
         lblClear.setForeground(new java.awt.Color(0, 0, 0));
@@ -329,28 +328,50 @@ public class GuiHomework extends javax.swing.JFrame {
         });
         jPanel1.add(lblClear, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 20, 90, -1));
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 700, 750));
+        btnSummary.setBackground(new java.awt.Color(51, 255, 51));
+        btnSummary.setForeground(new java.awt.Color(0, 0, 0));
+        btnSummary.setIcon(new javax.swing.ImageIcon("D:\\Semester 3\\Projek UAS OOP\\icons library\\Icon Pack User Interface (Flat Gradient)\\summary 24px (Prosymbols Premium).png")); // NOI18N
+        btnSummary.setText("      Summary");
+        btnSummary.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btnSummary.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSummaryActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnSummary, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 340, 140, 40));
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txtTitleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTitleActionPerformed
+    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtTitleActionPerformed
-
-    private void btnSaveMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSaveMouseClicked
         // TODO add your handling code here:
-        // Disable the button to prevent multiple clicks
-        btnSave.setEnabled(false);
+        String term = " ";
+        if (rb1stTerm.isSelected()) {
+            term = "1st Term";
+        } else if (rb2ndTerm.isSelected()) {
+            term = "2nd Term";
+        }
 
-        // Collect data from text fields
-        String title = txtTitle.getText();
-        Date tanggal = dcDate.getDate();
+        // Validate if a term is selected
+        if (term.equals(" ")) {
+            JOptionPane.showMessageDialog(this, "Please select a term.", "Error", JOptionPane.ERROR_MESSAGE);
+            return; // Exit the method if term is not selected
+        }
+
+        String grade = txtGrade.getText();
         String note = txtNote.getText();
-
-        // Convert Date to String using SimpleDateFormat
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String date = dateFormat.format(tanggal);
 
         // Get the selected subject from the combo box
         String selectedSubject = cmbSubject.getSelectedItem().toString();
@@ -364,108 +385,94 @@ public class GuiHomework extends javax.swing.JFrame {
         // Get the subject ID based on the selected subject title
         int id_subject = controllerSubject.getSubjectIdByTitle(id_akun, selectedSubject);
 
-        // Create an Homework object
-        Homework homework = new Homework(id_akun, id_subject, title, date, note);
+        Grade grades = new Grade(id_akun, id_subject, grade, term, note);
 
         // Create an instance of ControllerExam
-        ControllerHomework controllerHomework = new ControllerHomework();
+        ControllerGrade controllerGrade = new ControllerGrade();
 
         // Call the addExam method
-        boolean success = controllerHomework.addHomework(homework);
+        boolean success = controllerGrade.addGrade(grades);
 
         // Handle success or failure (e.g., show a message to the user)
         if (success) {
-            JOptionPane.showMessageDialog(this, "Homework added successfully!");
+            JOptionPane.showMessageDialog(this, "Grade added successfully!");
             // You can add further actions or messages here
-
-            // Refresh the table with the latest data
-            refreshTable();
-
         } else {
-            JOptionPane.showMessageDialog(this, "Failed to add homework.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Failed to add Grade.", "Error", JOptionPane.ERROR_MESSAGE);
             // Handle failure, show an error message, etc.
         }
 
-        // Enable the button after the operation is complete
-        btnSave.setEnabled(true);
-
         clearData();
-    }//GEN-LAST:event_btnSaveMouseClicked
+        refreshTable();
+    }//GEN-LAST:event_btnSaveActionPerformed
 
-    private void tabelHomeworkMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelHomeworkMouseClicked
+    private void tabelGradeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelGradeMouseClicked
         // TODO add your handling code here:
-        int row = tabelHomework.getSelectedRow();
+        int row = tabelGrade.getSelectedRow();
 
-        TableModel model = tabelHomework.getModel();
+        TableModel model = tabelGrade.getModel();
         txtId.setText(model.getValueAt(row, 0).toString());
-        txtTitle.setText(model.getValueAt(row, 1).toString());
-        // Retrieve the date as a String from the table model
-        String dateString = model.getValueAt(row, 2).toString();
+        txtGrade.setText(model.getValueAt(row, 1).toString());
+        
 
-        try {
-            // Parse the String to a java.util.Date
-            java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd").parse(dateString);
+        if (tabelGrade.getValueAt(row, 3).toString().equals("1st Term")) {
+            rb1stTerm.setSelected(true);
+        } else if (tabelGrade.getValueAt(row, 3).toString().equals("2nd Term")) {
+            rb2ndTerm.setSelected(true);
 
-            // Set the date in the JDateChooser
-            dcDate.setDate(utilDate);
-        } catch (ParseException ex) {
-            ex.printStackTrace(); // Handle the exception appropriately
         }
 
-        txtNote.setText(model.getValueAt(row, 3).toString());
-    }//GEN-LAST:event_tabelHomeworkMouseClicked
-
-    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnSaveActionPerformed
+        txtNote.setText(model.getValueAt(row, 4).toString());
+    }//GEN-LAST:event_tabelGradeMouseClicked
 
     private void lblBackMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblBackMouseClicked
         // TODO add your handling code here:
-        GuiAgenda guiAgenda = new GuiAgenda();
-        guiAgenda.setVisible(true);
+        GuiMainMenu guiMainMenu = new GuiMainMenu();
+        guiMainMenu.setVisible(true);
 
         dispose();
     }//GEN-LAST:event_lblBackMouseClicked
 
     private void lblUpdateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblUpdateMouseClicked
         // TODO add your handling code here:
+        // TODO add your handling code here:
         ControllerSubject conSubject = new ControllerSubject();
-        
-        int row = tabelHomework.getSelectedRow();
+
+        int row = tabelGrade.getSelectedRow();
         if (row == -1) {
             JOptionPane.showMessageDialog(lblUpdate, "Choose at least 1 data", "Warning", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        int idUpdate = Integer.parseInt(tabelHomework.getModel().getValueAt(row, 0).toString());
-        String newTitle = txtTitle.getText();
-        Date newDate = dcDate.getDate();
-        String newDateStr = null;
 
-        if (newDate != null) {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            newDateStr = dateFormat.format(newDate);
-        }
+        int idUpdate = Integer.parseInt(tabelGrade.getModel().getValueAt(row, 0).toString());
+        String newGrade = txtGrade.getText();
 
         // Assuming that cmbSubject is a JComboBox<String>
         String newCmbSubject = cmbSubject.getSelectedItem().toString();
-        
+
         int userId = UserSessionManager.getCurrentUserId();
-        
+
         // Get the id_subject based on the selected subject name
         int newIdSubject = conSubject.getSubjectIdByName(userId, newCmbSubject);
-        
-        
+
+        String term = " ";
+        if (rb1stTerm.isSelected()) {
+            term = "1st Term";
+        } else if (rb2ndTerm.isSelected()) {
+            term = "2nd Term";
+        }
+
         String newNote = txtNote.getText();
-        
-        Homework newHomework = new Homework();
-        newHomework.setId_homework(idUpdate);
-        newHomework.setTitle(newTitle);
-        newHomework.setDate(newDateStr);
-        newHomework.setId_subject(newIdSubject);
-        newHomework.setNote(newNote);
+
+        Grade grades = new Grade();
+        grades.setId_grade(idUpdate);
+        grades.setGrade(newGrade);
+        grades.setId_subject(newIdSubject);
+        grades.setTerm(term);
+        grades.setNote(newNote);
 
         // Update the reminder using the newReminder object
-        boolean updateSuccess = conHomework.updateHomework(newHomework);
+        boolean updateSuccess = conGrade.updateGrade(grades);
 
         if (updateSuccess) {
             JOptionPane.showMessageDialog(null, "Data has been successfully updated");
@@ -479,15 +486,16 @@ public class GuiHomework extends javax.swing.JFrame {
 
     private void lblDeleteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblDeleteMouseClicked
         // TODO add your handling code here:
-        int row = tabelHomework.getSelectedRow();
+        // TODO add your handling code here:
+        int row = tabelGrade.getSelectedRow();
 
         if (row == -1) {
             JOptionPane.showMessageDialog(lblUpdate, "Choose at least 1 data", "Warning", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        int idDelete = Integer.parseInt(tabelHomework.getModel().getValueAt(row, 0).toString());
-        conHomework.deleteHomework(idDelete);
+        int idDelete = Integer.parseInt(tabelGrade.getModel().getValueAt(row, 0).toString());
+        conGrade.deleteGrade(idDelete);
 
         JOptionPane.showMessageDialog(null, "Data has been Deleted");
 
@@ -499,6 +507,15 @@ public class GuiHomework extends javax.swing.JFrame {
         // TODO add your handling code here:
         clearData();
     }//GEN-LAST:event_lblClearMouseClicked
+
+    private void btnSummaryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSummaryActionPerformed
+        // TODO add your handling code here:
+        GuiSummary guiSummary = new GuiSummary();
+        guiSummary.setVisible(true);
+        
+        dispose();
+        
+    }//GEN-LAST:event_btnSummaryActionPerformed
 
     /**
      * @param args the command line arguments
@@ -514,61 +531,57 @@ public class GuiHomework extends javax.swing.JFrame {
                 if ("Windows".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
-
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(GuiHomework.class
-                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
-
+            java.util.logging.Logger.getLogger(GuiGrades.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(GuiHomework.class
-                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
-
+            java.util.logging.Logger.getLogger(GuiGrades.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(GuiHomework.class
-                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
-
+            java.util.logging.Logger.getLogger(GuiGrades.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(GuiHomework.class
-                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GuiGrades.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new GuiHomework().setVisible(true);
+                new GuiGrades().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup bgTerm;
     private javax.swing.JButton btnSave;
+    private javax.swing.JButton btnSummary;
     private javax.swing.JComboBox<String> cmbSubject;
-    private com.toedter.calendar.JDateChooser dcDate;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JSeparator jSeparator4;
     private javax.swing.JSeparator jSeparator5;
     private javax.swing.JSeparator jSeparator6;
+    private javax.swing.JSeparator jSeparator7;
     private javax.swing.JLabel lblBack;
     private javax.swing.JLabel lblClear;
     private javax.swing.JLabel lblDelete;
     private javax.swing.JLabel lblUpdate;
-    private javax.swing.JTable tabelHomework;
+    private javax.swing.JRadioButton rb1stTerm;
+    private javax.swing.JRadioButton rb2ndTerm;
+    private javax.swing.JTable tabelGrade;
+    private javax.swing.JTextField txtGrade;
     private javax.swing.JTextField txtId;
     private javax.swing.JTextField txtNote;
-    private javax.swing.JTextField txtTitle;
     // End of variables declaration//GEN-END:variables
 }

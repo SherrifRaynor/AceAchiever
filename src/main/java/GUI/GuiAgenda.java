@@ -4,6 +4,7 @@
  */
 package GUI;
 
+
 /**
  *
  * @author sherr
@@ -16,6 +17,8 @@ public class GuiAgenda extends javax.swing.JFrame {
     public GuiAgenda() {
         initComponents();
         setLocationRelativeTo(null);
+
+
     }
 
     /**
@@ -27,44 +30,62 @@ public class GuiAgenda extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        btnReminder = new javax.swing.JButton();
-        btnExam = new javax.swing.JButton();
-        btnHomework = new javax.swing.JButton();
-        btnBack = new javax.swing.JButton();
+        lblBack = new javax.swing.JLabel();
+        lblReminder = new javax.swing.JLabel();
+        lblExam = new javax.swing.JLabel();
+        lblHomework = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jPanel1.setBackground(new java.awt.Color(102, 0, 255));
+        jPanel1.setBackground(new java.awt.Color(126, 123, 158));
+        jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
         jPanel1.setMinimumSize(new java.awt.Dimension(0, 0));
         jPanel1.setPreferredSize(new java.awt.Dimension(800, 600));
 
+        jLabel1.setFont(new java.awt.Font("Lato", 1, 48)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(0, 0, 0));
         jLabel1.setText("Agenda");
 
-        btnReminder.setText("Reminder");
-        btnReminder.addMouseListener(new java.awt.event.MouseAdapter() {
+        lblBack.setIcon(new javax.swing.ImageIcon("D:\\Semester 3\\Projek UAS OOP\\icons library\\Icon Pack User Interface (Flat Gradient)\\back icon (bharat icons basic).png")); // NOI18N
+        lblBack.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnReminderMouseClicked(evt);
+                lblBackMouseClicked(evt);
             }
         });
 
-        btnExam.setText("Exam");
-        btnExam.addMouseListener(new java.awt.event.MouseAdapter() {
+        lblReminder.setBackground(new java.awt.Color(56, 63, 104));
+        lblReminder.setForeground(new java.awt.Color(56, 63, 104));
+        lblReminder.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblReminder.setIcon(new javax.swing.ImageIcon("D:\\Semester 3\\Projek UAS OOP\\icons library\\Icon Pack User Interface (Flat Gradient)\\Reminder ( pojok D flat).png")); // NOI18N
+        lblReminder.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 2, true), "Reminder", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lato", 1, 24), new java.awt.Color(27, 27, 27))); // NOI18N
+        lblReminder.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        lblReminder.setOpaque(true);
+        lblReminder.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnExamMouseClicked(evt);
+                lblReminderMouseClicked(evt);
             }
         });
 
-        btnHomework.setText("Homework");
-        btnHomework.addMouseListener(new java.awt.event.MouseAdapter() {
+        lblExam.setBackground(new java.awt.Color(56, 63, 104));
+        lblExam.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblExam.setIcon(new javax.swing.ImageIcon("D:\\Semester 3\\Projek UAS OOP\\icons library\\Icon Pack User Interface (Flat Gradient)\\exam (Special lineal color).png")); // NOI18N
+        lblExam.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 2, true), "Exam", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lato", 1, 24), new java.awt.Color(27, 27, 27))); // NOI18N
+        lblExam.setOpaque(true);
+        lblExam.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnHomeworkMouseClicked(evt);
+                lblExamMouseClicked(evt);
             }
         });
 
-        btnBack.setText("<-Back");
-        btnBack.addMouseListener(new java.awt.event.MouseAdapter() {
+        lblHomework.setBackground(new java.awt.Color(56, 63, 104));
+        lblHomework.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblHomework.setIcon(new javax.swing.ImageIcon("D:\\Semester 3\\Projek UAS OOP\\icons library\\Icon Pack User Interface (Flat Gradient)\\homework ( surang linenal color).png")); // NOI18N
+        lblHomework.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 2, true), "Homework", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lato", 1, 24), new java.awt.Color(27, 27, 27))); // NOI18N
+        lblHomework.setOpaque(true);
+        lblHomework.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnBackMouseClicked(evt);
+                lblHomeworkMouseClicked(evt);
             }
         });
 
@@ -73,82 +94,71 @@ public class GuiAgenda extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(363, 363, 363)
-                        .addComponent(jLabel1))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(131, 131, 131)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnExam, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnReminder, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnHomework)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(22, 22, 22)
-                        .addComponent(btnBack)))
-                .addContainerGap(395, Short.MAX_VALUE))
+                .addGap(50, 50, 50)
+                .addComponent(lblBack)
+                .addGap(185, 185, 185)
+                .addComponent(jLabel1)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(135, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(lblHomework, javax.swing.GroupLayout.DEFAULT_SIZE, 424, Short.MAX_VALUE)
+                    .addComponent(lblExam, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblReminder, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(137, 137, 137))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(23, 23, 23)
-                .addComponent(btnBack)
-                .addGap(41, 41, 41)
-                .addComponent(jLabel1)
-                .addGap(98, 98, 98)
-                .addComponent(btnReminder)
-                .addGap(48, 48, 48)
-                .addComponent(btnExam)
-                .addGap(44, 44, 44)
-                .addComponent(btnHomework)
-                .addContainerGap(222, Short.MAX_VALUE))
+                .addGap(34, 34, 34)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblBack)
+                    .addComponent(jLabel1))
+                .addGap(37, 37, 37)
+                .addComponent(lblReminder, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(lblExam, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(lblHomework, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(118, Short.MAX_VALUE))
         );
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 700, 750));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnReminderMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnReminderMouseClicked
-        // TODO add your handling code here:
-        GuiReminder guiReminder = new GuiReminder();
-        guiReminder.setVisible(true);
-        
-        dispose();
-    }//GEN-LAST:event_btnReminderMouseClicked
-
-    private void btnBackMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnBackMouseClicked
+    private void lblBackMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblBackMouseClicked
         // TODO add your handling code here:
         GuiMainMenu guiMainMenu = new GuiMainMenu();
         guiMainMenu.setVisible(true);
-        
-        dispose();
-    }//GEN-LAST:event_btnBackMouseClicked
 
-    private void btnExamMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnExamMouseClicked
+        dispose();
+    }//GEN-LAST:event_lblBackMouseClicked
+
+    private void lblReminderMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblReminderMouseClicked
+        // TODO add your handling code here:
+        GuiReminder guiReminder = new GuiReminder();
+        guiReminder.setVisible(true);
+
+        dispose();
+    }//GEN-LAST:event_lblReminderMouseClicked
+
+    private void lblExamMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblExamMouseClicked
         // TODO add your handling code here:
         GuiExam guiExam = new GuiExam();
         guiExam.setVisible(true);
         
         dispose();
-    }//GEN-LAST:event_btnExamMouseClicked
+    }//GEN-LAST:event_lblExamMouseClicked
 
-    private void btnHomeworkMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnHomeworkMouseClicked
+    private void lblHomeworkMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblHomeworkMouseClicked
         // TODO add your handling code here:
         GuiHomework guiHomework = new GuiHomework();
         guiHomework.setVisible(true);
-        
+
         dispose();
-    }//GEN-LAST:event_btnHomeworkMouseClicked
+    }//GEN-LAST:event_lblHomeworkMouseClicked
 
     /**
      * @param args the command line arguments
@@ -161,7 +171,7 @@ public class GuiAgenda extends javax.swing.JFrame {
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
+                if ("Windows".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
@@ -186,11 +196,11 @@ public class GuiAgenda extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnBack;
-    private javax.swing.JButton btnExam;
-    private javax.swing.JButton btnHomework;
-    private javax.swing.JButton btnReminder;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JLabel lblBack;
+    private javax.swing.JLabel lblExam;
+    private javax.swing.JLabel lblHomework;
+    private javax.swing.JLabel lblReminder;
     // End of variables declaration//GEN-END:variables
 }

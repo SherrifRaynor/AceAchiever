@@ -10,6 +10,7 @@ package Utilities;
  */
 public class UserSessionManager {
     private static int currentUserId;  // This variable holds the current user's id_akun
+    
      
     public static int getCurrentUserId() {
         return currentUserId;
@@ -18,6 +19,8 @@ public class UserSessionManager {
     public static void setCurrentUserId(int userId) {
         currentUserId = userId;
     }
+
+    
     
     
 }

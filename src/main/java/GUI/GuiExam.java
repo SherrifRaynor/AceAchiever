@@ -8,15 +8,26 @@ import Controller.ControllerExam;
 import Controller.ControllerSubject;
 import Utilities.UserSessionManager;
 import Entity.Exam;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 /**
  *
  * @author sherr
  */
 public class GuiExam extends javax.swing.JFrame {
+
+    ControllerExam conExam = new ControllerExam();
+    private final DefaultTableModel model;
 
     /**
      * Creates new form GuiExam
@@ -25,23 +36,102 @@ public class GuiExam extends javax.swing.JFrame {
         initComponents();
         setLocationRelativeTo(null);
 
+        // Initialize the table model
+        model = (DefaultTableModel) tabelExam.getModel();
+
         // Inisialisasi combo box
-        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
-        cmbSubjects.setModel(model);
+        DefaultComboBoxModel<String> cmbModel = new DefaultComboBoxModel<>();
+
+        cmbSubject.setModel(cmbModel);
 
         // Mengisi combo box dengan judul mata pelajaran
         ControllerSubject controllerSubject = new ControllerSubject();
         List<String> subjectTitles = controllerSubject.getAllSubjectTitles(UserSessionManager.getCurrentUserId());
         for (String title : subjectTitles) {
-            model.addElement(title);
+            cmbModel.addElement(title);
+        }
+
+        tabelExam.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        tabelExam.setRowHeight(40);
+
+        getData();
+        refreshTable();
+
+        // Add FocusListener to clear the text field when it gains focus
+        txtTitle.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                String currentText = txtTitle.getText();
+                if (currentText.equals("Add a title") || currentText.isEmpty()) {
+                    txtTitle.setText(null);
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                String currentText = txtTitle.getText();
+                if (currentText.isEmpty()) {
+                    txtTitle.setText("Add a title");
+                }
+            }
+        });
+
+        // Add FocusListener to clear the text field when it gains focus
+        txtNote.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                String currentText = txtNote.getText();
+                if (currentText.equals("Add a note") || currentText.isEmpty()) {
+                    txtNote.setText(null);
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                String currentText = txtNote.getText();
+                if (currentText.isEmpty()) {
+                    txtNote.setText("Add a note");
+                }
+            }
+        });
+    }
+
+    private void getData() {
+        DefaultTableModel dtm = (DefaultTableModel) tabelExam.getModel();
+        dtm.setRowCount(0);
+
+        // Get the current user's id_akun and current subject's id_subject
+        int userId = UserSessionManager.getCurrentUserId();
+
+        List<Exam> listExam = conExam.getAllExams(userId);
+
+        for (Exam newExam : listExam) {
+            String subjectName = conExam.getSubjectNameById(userId, newExam.getId_subject());
+            dtm.addRow(new Object[]{newExam.getId_exam(), newExam.getTitle(), newExam.getDate(), subjectName, newExam.getCategory(), newExam.getNote()});
         }
     }
 
     private void clearData() {
         txtTitle.setText("");
-        txtDate.setText("");
+        dcDate.setCalendar(null);
+        cmbSubject.setSelectedItem(null);
         bgCategory.clearSelection();
         txtNote.setText("");
+    }
+
+    // Refresh the table with the latest data
+    private void refreshTable() {
+        model.setRowCount(0);
+
+        int userId = UserSessionManager.getCurrentUserId();
+        List<Exam> listExam = conExam.getAllExams(userId);
+
+        for (Exam exam : listExam) {
+            String subjectName = conExam.getSubjectNameById(userId, exam.getId_subject());
+            String category = exam.getCategory();
+            Object[] rowData = {exam.getId_exam(), exam.getTitle(), exam.getDate(), subjectName, category, exam.getNote()};
+            model.addRow(rowData);
+        }
     }
 
     /**
@@ -54,9 +144,7 @@ public class GuiExam extends javax.swing.JFrame {
         bgCategory = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        btnBack = new javax.swing.JButton();
         txtTitle = new javax.swing.JTextField();
-        txtDate = new javax.swing.JTextField();
         txtNote = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -65,150 +153,234 @@ public class GuiExam extends javax.swing.JFrame {
         rbWrittenExam = new javax.swing.JRadioButton();
         rbPracticalExam = new javax.swing.JRadioButton();
         btnSave = new javax.swing.JButton();
+        cmbSubject = new javax.swing.JComboBox<>();
+        dcDate = new com.toedter.calendar.JDateChooser();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tabelExam = new javax.swing.JTable();
+        jLabel7 = new javax.swing.JLabel();
+        txtId = new javax.swing.JTextField();
+        lblBack = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        lblUpdate = new javax.swing.JLabel();
+        lblDelete = new javax.swing.JLabel();
+        jSeparator1 = new javax.swing.JSeparator();
+        jSeparator2 = new javax.swing.JSeparator();
+        jSeparator3 = new javax.swing.JSeparator();
+        jSeparator5 = new javax.swing.JSeparator();
+        jSeparator6 = new javax.swing.JSeparator();
+        jSeparator7 = new javax.swing.JSeparator();
         jLabel6 = new javax.swing.JLabel();
-        cmbSubjects = new javax.swing.JComboBox<>();
+        jLabel9 = new javax.swing.JLabel();
+        lblClear = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jPanel1.setBackground(new java.awt.Color(102, 102, 255));
+        jPanel1.setBackground(new java.awt.Color(126, 123, 158));
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        jLabel1.setFont(new java.awt.Font("Lato", 1, 24)); // NOI18N
         jLabel1.setText("Exam");
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 20, -1, -1));
 
-        btnBack.setText("<- Back");
-        btnBack.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnBackMouseClicked(evt);
+        txtTitle.setBackground(new java.awt.Color(126, 123, 158));
+        txtTitle.setFont(new java.awt.Font("Lato", 0, 12)); // NOI18N
+        txtTitle.setText("Add a title");
+        txtTitle.setBorder(null);
+        jPanel1.add(txtTitle, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 130, 220, 30));
+
+        txtNote.setBackground(new java.awt.Color(126, 123, 158));
+        txtNote.setFont(new java.awt.Font("Lato", 0, 12)); // NOI18N
+        txtNote.setText("Add a note");
+        txtNote.setBorder(null);
+        txtNote.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtNoteActionPerformed(evt);
             }
         });
+        jPanel1.add(txtNote, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 270, 200, 30));
 
-        jLabel2.setText("Title");
+        jLabel2.setFont(new java.awt.Font("Lato", 0, 12)); // NOI18N
+        jLabel2.setIcon(new javax.swing.ImageIcon("D:\\Semester 3\\Projek UAS OOP\\icons library\\Icon Pack User Interface (Flat Gradient)\\exam 24px (Special lineal).png")); // NOI18N
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 130, -1, 34));
 
-        jLabel3.setText("Date");
+        jLabel3.setFont(new java.awt.Font("Lato", 0, 12)); // NOI18N
+        jLabel3.setIcon(new javax.swing.ImageIcon("D:\\Semester 3\\Projek UAS OOP\\icons library\\Icon Pack User Interface (Flat Gradient)\\date 24px ( super basic ).png")); // NOI18N
+        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 200, -1, -1));
 
-        jLabel4.setText("Note");
+        jLabel4.setFont(new java.awt.Font("Lato", 0, 12)); // NOI18N
+        jLabel4.setIcon(new javax.swing.ImageIcon("D:\\Semester 3\\Projek UAS OOP\\icons library\\Icon Pack User Interface (Flat Gradient)\\note 24px ( uicons).png")); // NOI18N
+        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 270, -1, -1));
 
-        jLabel5.setText("Category");
+        jLabel5.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
+        jLabel5.setText("pick a  category");
+        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 120, -1, -1));
 
+        rbWrittenExam.setBackground(new java.awt.Color(126, 123, 158));
         bgCategory.add(rbWrittenExam);
+        rbWrittenExam.setFont(new java.awt.Font("Lato", 0, 12)); // NOI18N
         rbWrittenExam.setText("Written Exam");
+        jPanel1.add(rbWrittenExam, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 150, 104, 30));
 
+        rbPracticalExam.setBackground(new java.awt.Color(126, 123, 158));
         bgCategory.add(rbPracticalExam);
+        rbPracticalExam.setFont(new java.awt.Font("Lato", 0, 12)); // NOI18N
         rbPracticalExam.setText("Practical Exam");
+        jPanel1.add(rbPracticalExam, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 180, -1, 30));
 
+        btnSave.setBackground(new java.awt.Color(56, 63, 104));
+        btnSave.setFont(new java.awt.Font("Lato", 0, 12)); // NOI18N
+        btnSave.setForeground(new java.awt.Color(0, 0, 0));
         btnSave.setText("Save");
         btnSave.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnSaveMouseClicked(evt);
             }
         });
-
-        jLabel6.setText("Subject");
-
-        cmbSubjects.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        cmbSubjects.addActionListener(new java.awt.event.ActionListener() {
+        btnSave.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmbSubjectsActionPerformed(evt);
+                btnSaveActionPerformed(evt);
             }
         });
+        jPanel1.add(btnSave, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 20, -1, 30));
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(375, 375, 375)
-                        .addComponent(jLabel1))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(15, 15, 15)
-                        .addComponent(btnBack))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(182, 182, 182)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnSave)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jLabel2)
-                                .addComponent(jLabel3)
-                                .addComponent(jLabel4)
-                                .addComponent(jLabel5)
-                                .addComponent(rbWrittenExam, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(rbPracticalExam, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(txtTitle)
-                                .addComponent(txtDate)
-                                .addComponent(txtNote))
-                            .addComponent(jLabel6)
-                            .addComponent(cmbSubjects, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(396, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(14, 14, 14)
-                .addComponent(btnBack)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel1)
-                .addGap(65, 65, 65)
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtTitle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(24, 24, 24)
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel6)
-                .addGap(31, 31, 31)
-                .addComponent(cmbSubjects, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 43, Short.MAX_VALUE)
-                .addComponent(jLabel5)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(rbWrittenExam)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(rbPracticalExam)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtNote, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(btnSave)
-                .addGap(31, 31, 31))
-        );
+        cmbSubject.setBackground(new java.awt.Color(126, 123, 158));
+        cmbSubject.setFont(new java.awt.Font("Lato", 0, 12)); // NOI18N
+        cmbSubject.setForeground(new java.awt.Color(126, 123, 158));
+        cmbSubject.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cmbSubject.setBorder(null);
+        cmbSubject.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbSubjectActionPerformed(evt);
+            }
+        });
+        jPanel1.add(cmbSubject, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 270, 201, 30));
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
+        dcDate.setBackground(new java.awt.Color(126, 123, 158));
+        jPanel1.add(dcDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 200, 110, 30));
+
+        tabelExam.setFont(new java.awt.Font("Lato", 0, 12)); // NOI18N
+        tabelExam.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
+            },
+            new String [] {
+                "ID", "Title", "Date", "Subject", "Category", "Note"
+            }
+        ));
+        tabelExam.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tabelExamMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tabelExam);
+
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 410, 700, 340));
+
+        jLabel7.setFont(new java.awt.Font("Lato", 0, 12)); // NOI18N
+        jLabel7.setText("Pick a subject");
+        jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 250, -1, 10));
+
+        txtId.setBackground(new java.awt.Color(126, 123, 158));
+        txtId.setFont(new java.awt.Font("Lato", 0, 12)); // NOI18N
+        txtId.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jPanel1.add(txtId, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 90, 50, -1));
+
+        lblBack.setIcon(new javax.swing.ImageIcon("D:\\Semester 3\\Projek UAS OOP\\icons library\\Icon Pack User Interface (Flat Gradient)\\back icon (bharat icons basic).png")); // NOI18N
+        lblBack.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblBackMouseClicked(evt);
+            }
+        });
+        jPanel1.add(lblBack, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 6, -1, -1));
+
+        jLabel8.setIcon(new javax.swing.ImageIcon("D:\\Semester 3\\Projek UAS OOP\\icons library\\Icon Pack User Interface (Flat Gradient)\\subject 24px (Mikan933 Detailed outline).png")); // NOI18N
+        jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 270, -1, -1));
+
+        lblUpdate.setIcon(new javax.swing.ImageIcon("D:\\Semester 3\\Projek UAS OOP\\icons library\\Icon Pack User Interface (Flat Gradient)\\pencil 24px(special flat).png")); // NOI18N
+        lblUpdate.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblUpdateMouseClicked(evt);
+            }
+        });
+        jPanel1.add(lblUpdate, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 360, -1, -1));
+
+        lblDelete.setIcon(new javax.swing.ImageIcon("D:\\Semester 3\\Projek UAS OOP\\icons library\\Icon Pack User Interface (Flat Gradient)\\trash 24px( bqlqn lineal).png")); // NOI18N
+        lblDelete.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblDeleteMouseClicked(evt);
+            }
+        });
+        jPanel1.add(lblDelete, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 360, -1, -1));
+
+        jSeparator1.setForeground(new java.awt.Color(250, 236, 226));
+        jPanel1.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 120, 230, 10));
+
+        jSeparator2.setForeground(new java.awt.Color(250, 236, 226));
+        jPanel1.add(jSeparator2, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 170, 230, 10));
+
+        jSeparator3.setForeground(new java.awt.Color(250, 236, 226));
+        jPanel1.add(jSeparator3, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 240, 230, 10));
+
+        jSeparator5.setForeground(new java.awt.Color(250, 236, 226));
+        jPanel1.add(jSeparator5, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 240, 230, 10));
+
+        jSeparator6.setForeground(new java.awt.Color(250, 236, 226));
+        jPanel1.add(jSeparator6, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 70, 480, 10));
+
+        jSeparator7.setForeground(new java.awt.Color(250, 236, 226));
+        jPanel1.add(jSeparator7, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 310, 480, 10));
+
+        jLabel6.setIcon(new javax.swing.ImageIcon("D:\\Semester 3\\Projek UAS OOP\\icons library\\Stickers\\Exam 128px (Tomomi The Cat Lineal Color).png")); // NOI18N
+        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 100, -1, -1));
+
+        jLabel9.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
+        jLabel9.setText("ID");
+        jPanel1.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 90, -1, -1));
+
+        lblClear.setBackground(new java.awt.Color(126, 123, 158));
+        lblClear.setForeground(new java.awt.Color(0, 0, 0));
+        lblClear.setIcon(new javax.swing.ImageIcon("D:\\Semester 3\\Projek UAS OOP\\icons library\\Icon Pack User Interface (Flat Gradient)\\Clear 24px.png")); // NOI18N
+        lblClear.setText("Clear Field");
+        lblClear.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        lblClear.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblClearMouseClicked(evt);
+            }
+        });
+        jPanel1.add(lblClear, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 20, 90, -1));
+
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 700, 750));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void btnBackMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnBackMouseClicked
-        // TODO add your handling code here:
-        GuiAgenda guiAgenda = new GuiAgenda();
-        guiAgenda.setVisible(true);
-        
-        dispose();
-    }//GEN-LAST:event_btnBackMouseClicked
 
     private void btnSaveMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSaveMouseClicked
         // TODO add your handling code here:
         // Disable the button to prevent multiple clicks
         btnSave.setEnabled(false);
 
+        String category = " ";
+        if (rbWrittenExam.isSelected()) {
+            category = "Written Exam";
+        } else if (rbPracticalExam.isSelected()) {
+            category = "Practical Exam";
+        }
+
         // Collect data from text fields
         String title = txtTitle.getText();
-        String date = txtDate.getText();
+        Date tanggal = dcDate.getDate();
         String note = txtNote.getText();
 
+        // Convert Date to String using SimpleDateFormat
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String date = dateFormat.format(tanggal);
+
         // Get the selected subject from the combo box
-        String selectedSubject = cmbSubjects.getSelectedItem().toString();
+        String selectedSubject = cmbSubject.getSelectedItem().toString();
 
         // Get the current user's id_akun
         int id_akun = UserSessionManager.getCurrentUserId();
@@ -220,7 +392,7 @@ public class GuiExam extends javax.swing.JFrame {
         int id_subject = controllerSubject.getSubjectIdByTitle(id_akun, selectedSubject);
 
         // Create an Exam object
-        Exam exam = new Exam(id_akun, id_subject, title, date, selectedSubject, note);
+        Exam exam = new Exam(id_akun, id_subject, title, date, category, note);
 
         // Create an instance of ControllerExam
         ControllerExam controllerExam = new ControllerExam();
@@ -242,12 +414,141 @@ public class GuiExam extends javax.swing.JFrame {
         btnSave.setEnabled(true);
 
         clearData();
-
+        refreshTable();
     }//GEN-LAST:event_btnSaveMouseClicked
 
-    private void cmbSubjectsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbSubjectsActionPerformed
+    private void cmbSubjectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbSubjectActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_cmbSubjectsActionPerformed
+    }//GEN-LAST:event_cmbSubjectActionPerformed
+
+    private void tabelExamMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelExamMouseClicked
+        // TODO add your handling code here:
+        int row = tabelExam.getSelectedRow();
+
+        TableModel model = tabelExam.getModel();
+        txtId.setText(model.getValueAt(row, 0).toString());
+        txtTitle.setText(model.getValueAt(row, 1).toString());
+        // Retrieve the date as a String from the table model
+        String dateString = model.getValueAt(row, 2).toString();
+
+        try {
+            // Parse the String to a java.util.Date
+            java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd").parse(dateString);
+
+            // Set the date in the JDateChooser
+            dcDate.setDate(utilDate);
+
+        } catch (ParseException ex) {
+            ex.printStackTrace(); // Handle the exception appropriately
+        }
+
+        if (tabelExam.getValueAt(row, 3).toString().equals("Written Exam")) {
+            rbWrittenExam.setSelected(true);
+        } else if (tabelExam.getValueAt(row, 3).toString().equals("Practical Exam")) {
+            rbPracticalExam.setSelected(true);
+
+        }
+
+        txtNote.setText(model.getValueAt(row, 5).toString());
+    }//GEN-LAST:event_tabelExamMouseClicked
+
+    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_btnSaveActionPerformed
+
+    private void lblBackMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblBackMouseClicked
+        // TODO add your handling code here:
+        GuiAgenda guiAgenda = new GuiAgenda();
+        guiAgenda.setVisible(true);
+
+        dispose();
+    }//GEN-LAST:event_lblBackMouseClicked
+
+    private void lblDeleteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblDeleteMouseClicked
+        // TODO add your handling code here:
+        int row = tabelExam.getSelectedRow();
+
+        if (row == -1) {
+            JOptionPane.showMessageDialog(lblUpdate, "Choose at least 1 data", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int idDelete = Integer.parseInt(tabelExam.getModel().getValueAt(row, 0).toString());
+        conExam.deleteExam(idDelete);
+
+        JOptionPane.showMessageDialog(null, "Data has been Deleted");
+
+        getData();
+        refreshTable();
+    }//GEN-LAST:event_lblDeleteMouseClicked
+
+    private void lblUpdateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblUpdateMouseClicked
+        // TODO add your handling code here:
+        ControllerSubject conSubject = new ControllerSubject();
+
+        int row = tabelExam.getSelectedRow();
+        if (row == -1) {
+            JOptionPane.showMessageDialog(lblUpdate, "Choose at least 1 data", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int idUpdate = Integer.parseInt(tabelExam.getModel().getValueAt(row, 0).toString());
+        String newTitle = txtTitle.getText();
+        Date newDate = dcDate.getDate();
+        String newDateStr = null;
+
+        if (newDate != null) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            newDateStr = dateFormat.format(newDate);
+        }
+
+        // Assuming that cmbSubject is a JComboBox<String>
+        String newCmbSubject = cmbSubject.getSelectedItem().toString();
+
+        int userId = UserSessionManager.getCurrentUserId();
+
+        // Get the id_subject based on the selected subject name
+        int newIdSubject = conSubject.getSubjectIdByName(userId, newCmbSubject);
+
+        String category = " ";
+        if (rbWrittenExam.isSelected()) {
+            category = "Written Exam";
+        } else if (rbPracticalExam.isSelected()) {
+            category = "Practical Exam";
+        }
+
+        String newNote = txtNote.getText();
+
+        Exam newExam = new Exam();
+        newExam.setId_exam(idUpdate);
+        newExam.setTitle(newTitle);
+        newExam.setDate(newDateStr);
+        newExam.setId_subject(newIdSubject);
+        newExam.setCategory(category);
+        newExam.setNote(newNote);
+
+        // Update the reminder using the newReminder object
+        boolean updateSuccess = conExam.updateExam(newExam);
+
+        if (updateSuccess) {
+            JOptionPane.showMessageDialog(null, "Data has been successfully updated");
+            getData();
+            refreshTable();
+            clearData();
+        } else {
+            JOptionPane.showMessageDialog(null, "Failed to update data", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_lblUpdateMouseClicked
+
+    private void txtNoteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNoteActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtNoteActionPerformed
+
+    private void lblClearMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblClearMouseClicked
+        // TODO add your handling code here:
+        clearData();
+    }//GEN-LAST:event_lblClearMouseClicked
 
     /**
      * @param args the command line arguments
@@ -260,7 +561,7 @@ public class GuiExam extends javax.swing.JFrame {
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
+                if ("Windows".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
@@ -286,19 +587,34 @@ public class GuiExam extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup bgCategory;
-    private javax.swing.JButton btnBack;
     private javax.swing.JButton btnSave;
-    private javax.swing.JComboBox<String> cmbSubjects;
+    private javax.swing.JComboBox<String> cmbSubject;
+    private com.toedter.calendar.JDateChooser dcDate;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JSeparator jSeparator3;
+    private javax.swing.JSeparator jSeparator5;
+    private javax.swing.JSeparator jSeparator6;
+    private javax.swing.JSeparator jSeparator7;
+    private javax.swing.JLabel lblBack;
+    private javax.swing.JLabel lblClear;
+    private javax.swing.JLabel lblDelete;
+    private javax.swing.JLabel lblUpdate;
     private javax.swing.JRadioButton rbPracticalExam;
     private javax.swing.JRadioButton rbWrittenExam;
-    private javax.swing.JTextField txtDate;
+    private javax.swing.JTable tabelExam;
+    private javax.swing.JTextField txtId;
     private javax.swing.JTextField txtNote;
     private javax.swing.JTextField txtTitle;
     // End of variables declaration//GEN-END:variables

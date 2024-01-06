@@ -17,18 +17,18 @@ public class ControllerSubject {
     // Create a new subject
     public boolean addSubject(Subject subject) {
         // Check if the subject already exists for the given user
-        if (subjectExists(subject.getId_akun(), subject.getNama(), subject.getBobot(), subject.getRuangan())) {
+        if (subjectExists(subject.getId_akun(), subject.getName(), subject.getWeight(), subject.getRoom())) {
             System.out.println("Subject already exists for the given user.");
             return false;
         }
 
-        String query = "INSERT INTO subject (id_akun, nama, bobot, ruangan) VALUES (?, ?, ?, ?)";
+        String query = "INSERT INTO subject (id_akun, name, weight, room) VALUES (?, ?, ?, ?)";
 
         try (PreparedStatement preparedStatement = connect.prepareStatement(query)) {
             preparedStatement.setInt(1, subject.getId_akun());
-            preparedStatement.setString(2, subject.getNama());
-            preparedStatement.setInt(3, subject.getBobot());
-            preparedStatement.setString(4, subject.getRuangan());
+            preparedStatement.setString(2, subject.getName());
+            preparedStatement.setInt(3, subject.getWeight());
+            preparedStatement.setString(4, subject.getRoom());
 
             preparedStatement.executeUpdate();
             return true;
@@ -47,33 +47,32 @@ public class ControllerSubject {
         try (PreparedStatement preparedStatement = connect.prepareStatement(query)) {
             preparedStatement.setInt(1, id_akun);
 
-            ResultSet resultSet = preparedStatement.executeQuery();
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    Subject subject = new Subject();
+                    subject.setId_subject(resultSet.getInt("id_subject"));
+                    subject.setName(resultSet.getString("name"));
+                    subject.setWeight(resultSet.getInt("weight"));
+                    subject.setRoom(resultSet.getString("room"));
 
-            while (resultSet.next()) {
-                int id_subject = resultSet.getInt("id_subject");
-                String nama = resultSet.getString("nama");
-                int bobot = resultSet.getInt("bobot");
-                String ruangan = resultSet.getString("ruangan");
-
-                Subject subject = new Subject(id_akun, nama, bobot, ruangan);
-                subjects.add(subject);
+                    subjects.add(subject);
+                }
             }
 
-        } catch (SQLException ex) {
-            System.out.println(ex.toString());
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-
         return subjects;
     }
 
-    // Update a subject
+// Update a subject
     public boolean updateSubject(Subject subject) {
-        String query = "UPDATE subject SET nama = ?, bobot = ?, ruangan = ? WHERE id_subject = ?";
+        String query = "UPDATE subject SET name = ?, weight = ?, room = ? WHERE id_subject = ?";
 
         try (PreparedStatement preparedStatement = connect.prepareStatement(query)) {
-            preparedStatement.setString(1, subject.getNama());
-            preparedStatement.setInt(2, subject.getBobot());
-            preparedStatement.setString(3, subject.getRuangan());
+            preparedStatement.setString(1, subject.getName());
+            preparedStatement.setInt(2, subject.getWeight());
+            preparedStatement.setString(3, subject.getRoom());
             preparedStatement.setInt(4, subject.getId_subject());
 
             int rowsUpdated = preparedStatement.executeUpdate();
@@ -102,14 +101,14 @@ public class ControllerSubject {
     }
 
     // Helper method to check if a subject already exists for the given user
-    private boolean subjectExists(int id_akun, String nama, int bobot, String ruangan) {
-        String query = "SELECT COUNT(*) FROM subject WHERE id_akun = ? AND nama = ? AND bobot = ? AND ruangan = ?";
+    private boolean subjectExists(int id_akun, String name, int weight, String room) {
+        String query = "SELECT COUNT(*) FROM subject WHERE id_akun = ? AND name = ? AND weight = ? AND room = ?";
 
         try (PreparedStatement preparedStatement = connect.prepareStatement(query)) {
             preparedStatement.setInt(1, id_akun);
-            preparedStatement.setString(2, nama);
-            preparedStatement.setInt(3, bobot);
-            preparedStatement.setString(4, ruangan);
+            preparedStatement.setString(2, name);
+            preparedStatement.setInt(3, weight);
+            preparedStatement.setString(4, room);
 
             ResultSet resultSet = preparedStatement.executeQuery();
             resultSet.next();
@@ -125,7 +124,7 @@ public class ControllerSubject {
 
     public List<String> getAllSubjectTitles(int id_akun) {
         List<String> titles = new ArrayList<>();
-        String query = "SELECT nama FROM subject WHERE id_akun = ?";
+        String query = "SELECT name FROM subject WHERE id_akun = ?";
 
         try (PreparedStatement preparedStatement = connect.prepareStatement(query)) {
             preparedStatement.setInt(1, id_akun);
@@ -133,7 +132,7 @@ public class ControllerSubject {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                String title = resultSet.getString("nama");
+                String title = resultSet.getString("name");
                 titles.add(title);
             }
 
@@ -145,7 +144,7 @@ public class ControllerSubject {
     }
 
     public int getSubjectIdByTitle(int id_akun, String subjectTitle) {
-        String query = "SELECT id_subject FROM subject WHERE id_akun = ? AND nama = ?";
+        String query = "SELECT id_subject FROM subject WHERE id_akun = ? AND name = ?";
 
         try (PreparedStatement preparedStatement = connect.prepareStatement(query)) {
             preparedStatement.setInt(1, id_akun);
@@ -158,6 +157,29 @@ public class ControllerSubject {
             } else {
                 // Handle the case where the subject with the given title is not found
                 System.out.println("Subject not found for title: " + subjectTitle);
+                return -1; // Or throw an exception, return a default value, etc.
+            }
+
+        } catch (SQLException ex) {
+            System.out.println(ex.toString());
+            return -1; // Or throw an exception, return a default value, etc.
+        }
+    }
+
+    public int getSubjectIdByName(int id_akun, String subjectName) {
+        String query = "SELECT id_subject FROM subject WHERE id_akun = ? AND name = ?";
+
+        try (PreparedStatement preparedStatement = connect.prepareStatement(query)) {
+            preparedStatement.setInt(1, id_akun);
+            preparedStatement.setString(2, subjectName);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                return resultSet.getInt("id_subject");
+            } else {
+                // Handle the case where the subject with the given name is not found
+                System.out.println("Subject not found for name: " + subjectName);
                 return -1; // Or throw an exception, return a default value, etc.
             }
 

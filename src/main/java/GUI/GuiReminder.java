@@ -7,6 +7,8 @@ package GUI;
 import Controller.ControllerReminder;
 import Utilities.UserSessionManager;
 import Entity.Reminder;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.text.ParseException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -14,6 +16,7 @@ import javax.swing.table.DefaultTableModel;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import javax.swing.JTable;
 import javax.swing.table.TableModel;
 
 /**
@@ -33,22 +36,57 @@ public class GuiReminder extends javax.swing.JFrame {
         setLocationRelativeTo(null);
 
         // Initialize the table model
-        model = new DefaultTableModel();
+        model = (DefaultTableModel) tabelReminder.getModel();
 
-        tabelReminder.setModel(model);
-
-        model.addColumn("ID");
-        model.addColumn("Title");
-        model.addColumn("Date");
-        model.addColumn("Note");
+        // Set auto-resize mode after setting preferred widths
+        tabelReminder.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        tabelReminder.setRowHeight(40);
 
         getData();
         refreshTable();
+
+        // Add FocusListener to clear the text field when it gains focus
+        txtTitle.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                String currentText = txtTitle.getText();
+                if (currentText.equals("Add a title") || currentText.isEmpty()) {
+                    txtTitle.setText(null);
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                String currentText = txtTitle.getText();
+                if (currentText.isEmpty()) {
+                    txtTitle.setText("Add a title");
+                }
+            }
+        });
+
+        // Add FocusListener to clear the text field when it gains focus
+        txtNote.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                String currentText = txtNote.getText();
+                if (currentText.equals("Add a note") || currentText.isEmpty()) {
+                    txtNote.setText(null);
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                String currentText = txtNote.getText();
+                if (currentText.isEmpty()) {
+                    txtNote.setText("Add a note");
+                }
+            }
+        });
+
     }
 
     private void getData() {
         DefaultTableModel dtm = (DefaultTableModel) tabelReminder.getModel();
-
         dtm.setRowCount(0);
 
         // Get the current user's id_akun
@@ -103,49 +141,63 @@ public class GuiReminder extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        btnUpdate = new javax.swing.JButton();
-        btnBack = new javax.swing.JButton();
         btnSave = new javax.swing.JButton();
-        btnDelete = new javax.swing.JButton();
         dcDate = new com.toedter.calendar.JDateChooser();
         txtId = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tabelReminder = new javax.swing.JTable();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jSeparator1 = new javax.swing.JSeparator();
+        jSeparator2 = new javax.swing.JSeparator();
+        jLabel8 = new javax.swing.JLabel();
+        jSeparator3 = new javax.swing.JSeparator();
+        lblUpdate = new javax.swing.JLabel();
+        lblDelete = new javax.swing.JLabel();
+        jSeparator4 = new javax.swing.JSeparator();
+        jSeparator5 = new javax.swing.JSeparator();
+        lblClear = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jPanel1.setBackground(new java.awt.Color(102, 0, 255));
+        jPanel1.setBackground(new java.awt.Color(126, 123, 158));
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        jLabel1.setFont(new java.awt.Font("Lato", 1, 24)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Reminder");
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 10, -1, -1));
 
-        jLabel2.setText("Title");
+        txtTitle.setBackground(new java.awt.Color(126, 123, 158));
+        txtTitle.setFont(new java.awt.Font("Lato", 0, 12)); // NOI18N
+        txtTitle.setText("Add a title");
+        txtTitle.setBorder(null);
+        txtTitle.setOpaque(true);
+        jPanel1.add(txtTitle, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 150, 280, 30));
 
-        jLabel3.setText("Date");
+        txtNote.setBackground(new java.awt.Color(126, 123, 158));
+        txtNote.setFont(new java.awt.Font("Lato", 0, 12)); // NOI18N
+        txtNote.setText("Add a note");
+        txtNote.setBorder(null);
+        txtNote.setOpaque(true);
+        jPanel1.add(txtNote, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 300, 310, 30));
 
-        jLabel5.setText("Note");
+        jLabel2.setFont(new java.awt.Font("Lato", 0, 12)); // NOI18N
+        jLabel2.setIcon(new javax.swing.ImageIcon("D:\\Semester 3\\Projek UAS OOP\\icons library\\Icon Pack User Interface (Flat Gradient)\\Reminder 24 px( Bell free icon).png")); // NOI18N
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 150, -1, -1));
 
-        btnUpdate.setText("Update");
-        btnUpdate.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnUpdateMouseClicked(evt);
-            }
-        });
-        btnUpdate.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnUpdateActionPerformed(evt);
-            }
-        });
+        jLabel3.setFont(new java.awt.Font("Lato", 0, 12)); // NOI18N
+        jLabel3.setIcon(new javax.swing.ImageIcon("D:\\Semester 3\\Projek UAS OOP\\icons library\\Icon Pack User Interface (Flat Gradient)\\date 24px ( super basic ).png")); // NOI18N
+        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 220, -1, -1));
+        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 825, -1, -1));
 
-        btnBack.setText("<- Back");
-        btnBack.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnBackMouseClicked(evt);
-            }
-        });
-
+        btnSave.setBackground(new java.awt.Color(56, 63, 104));
+        btnSave.setFont(new java.awt.Font("Lato", 0, 12)); // NOI18N
+        btnSave.setForeground(new java.awt.Color(0, 0, 0));
         btnSave.setText("Save");
+        btnSave.setOpaque(true);
         btnSave.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnSaveMouseClicked(evt);
@@ -156,23 +208,25 @@ public class GuiReminder extends javax.swing.JFrame {
                 btnSaveActionPerformed(evt);
             }
         });
+        jPanel1.add(btnSave, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 20, 85, 30));
 
-        btnDelete.setText("Delete");
-        btnDelete.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnDeleteMouseClicked(evt);
-            }
-        });
-        btnDelete.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDeleteActionPerformed(evt);
-            }
-        });
+        dcDate.setBackground(new java.awt.Color(126, 123, 158));
+        dcDate.setForeground(new java.awt.Color(126, 123, 158));
+        dcDate.setToolTipText("");
+        dcDate.setFont(new java.awt.Font("Lato", 0, 12)); // NOI18N
+        jPanel1.add(dcDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 220, 131, 30));
 
         txtId.setEditable(false);
+        txtId.setBackground(new java.awt.Color(126, 123, 158));
+        txtId.setFont(new java.awt.Font("Lato", 0, 12)); // NOI18N
+        txtId.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jPanel1.add(txtId, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 90, 50, -1));
 
-        jLabel6.setText("id");
+        jLabel6.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
+        jLabel6.setText("ID");
+        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 90, -1, -1));
 
+        tabelReminder.setFont(new java.awt.Font("Lato", 0, 12)); // NOI18N
         tabelReminder.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -191,156 +245,69 @@ public class GuiReminder extends javax.swing.JFrame {
         });
         jScrollPane2.setViewportView(tabelReminder);
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(16, 16, 16)
-                        .addComponent(btnBack))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(79, 79, 79)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(btnSave)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnDelete))
-                            .addComponent(btnUpdate)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(131, 131, 131)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel5)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jLabel2)
-                                .addComponent(jLabel3)
-                                .addGroup(jPanel1Layout.createSequentialGroup()
-                                    .addComponent(jLabel4)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(dcDate, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(4, 4, 4))
-                                .addComponent(txtTitle)
-                                .addComponent(txtNote)))))
-                .addGap(32, 32, 32)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel6)
-                    .addComponent(jLabel1)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(10, 10, 10))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(40, 40, 40)
-                        .addComponent(jLabel1))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(20, 20, 20)
-                        .addComponent(btnBack)))
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(76, 76, 76)
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtTitle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(22, 22, 22)
-                        .addComponent(jLabel3)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(38, 38, 38)
-                                .addComponent(jLabel4))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(18, 18, 18)
-                                .addComponent(dcDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtNote, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(56, 56, 56)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnSave)
-                            .addComponent(btnDelete))
-                        .addGap(18, 18, 18)
-                        .addComponent(btnUpdate))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel6)
-                        .addGap(2, 2, 2)
-                        .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(48, Short.MAX_VALUE))
-        );
+        jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 388, 688, 360));
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
+        jLabel7.setIcon(new javax.swing.ImageIcon("D:\\Semester 3\\Projek UAS OOP\\icons library\\Icon Pack User Interface (Flat Gradient)\\back icon (bharat icons basic).png")); // NOI18N
+        jLabel7.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel7MouseClicked(evt);
+            }
+        });
+        jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(17, 10, -1, -1));
+
+        jLabel5.setIcon(new javax.swing.ImageIcon("D:\\Semester 3\\Projek UAS OOP\\icons library\\Icon Pack User Interface (Flat Gradient)\\note 24px ( uicons).png")); // NOI18N
+        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 300, -1, -1));
+
+        jSeparator1.setForeground(new java.awt.Color(250, 236, 226));
+        jPanel1.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 190, 310, 20));
+
+        jSeparator2.setForeground(new java.awt.Color(250, 236, 226));
+        jPanel1.add(jSeparator2, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 270, 312, 10));
+
+        jLabel8.setIcon(new javax.swing.ImageIcon("D:\\Semester 3\\Projek UAS OOP\\icons library\\Stickers\\Reminder 256px (Tomomi The Cat Lineal Color).png")); // NOI18N
+        jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 70, 242, -1));
+
+        jSeparator3.setForeground(new java.awt.Color(250, 236, 226));
+        jPanel1.add(jSeparator3, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 340, 400, 20));
+
+        lblUpdate.setIcon(new javax.swing.ImageIcon("D:\\Semester 3\\Projek UAS OOP\\icons library\\Icon Pack User Interface (Flat Gradient)\\pencil 24px(special flat).png")); // NOI18N
+        lblUpdate.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblUpdateMouseClicked(evt);
+            }
+        });
+        jPanel1.add(lblUpdate, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 340, -1, -1));
+
+        lblDelete.setIcon(new javax.swing.ImageIcon("D:\\Semester 3\\Projek UAS OOP\\icons library\\Icon Pack User Interface (Flat Gradient)\\trash 24px( bqlqn lineal).png")); // NOI18N
+        lblDelete.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblDeleteMouseClicked(evt);
+            }
+        });
+        jPanel1.add(lblDelete, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 340, -1, -1));
+
+        jSeparator4.setForeground(new java.awt.Color(250, 236, 226));
+        jPanel1.add(jSeparator4, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 120, 310, 15));
+
+        jSeparator5.setForeground(new java.awt.Color(250, 236, 226));
+        jPanel1.add(jSeparator5, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 70, 400, 15));
+
+        lblClear.setBackground(new java.awt.Color(126, 123, 158));
+        lblClear.setForeground(new java.awt.Color(0, 0, 0));
+        lblClear.setIcon(new javax.swing.ImageIcon("D:\\Semester 3\\Projek UAS OOP\\icons library\\Icon Pack User Interface (Flat Gradient)\\Clear 24px.png")); // NOI18N
+        lblClear.setText("Clear Field");
+        lblClear.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        lblClear.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblClearMouseClicked(evt);
+            }
+        });
+        jPanel1.add(lblClear, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 20, 90, -1));
+
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 700, 750));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void btnUpdateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnUpdateMouseClicked
-        int row = tabelReminder.getSelectedRow();
-        if (row == -1) {
-            JOptionPane.showMessageDialog(btnUpdate, "Choose at least 1 data", "Warning", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        int idUpdate = Integer.parseInt(tabelReminder.getModel().getValueAt(row, 0).toString());
-        String newTitle = txtTitle.getText();
-        Date newDate = dcDate.getDate();
-        String newDateStr = null;
-
-        if (newDate != null) {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            newDateStr = dateFormat.format(newDate);
-        }
-
-        String newNote = txtNote.getText();
-
-        Reminder newReminder = new Reminder();
-        newReminder.setId_reminder(idUpdate);
-        newReminder.setTitle(newTitle);
-        newReminder.setDate(newDateStr);
-        newReminder.setNote(newNote);
-
-        // Update the reminder using the newReminder object
-        boolean updateSuccess = conReminder.updateReminder(newReminder);
-
-        if (updateSuccess) {
-            JOptionPane.showMessageDialog(null, "Data has been successfully updated");
-            getData();
-            refreshTable();
-        } else {
-            JOptionPane.showMessageDialog(null, "Failed to update data", "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }//GEN-LAST:event_btnUpdateMouseClicked
-
-    private void btnBackMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnBackMouseClicked
-        // TODO add your handling code here:
-        GuiAgenda guiAgenda = new GuiAgenda();
-        guiAgenda.setVisible(true);
-
-        dispose();
-    }//GEN-LAST:event_btnBackMouseClicked
-
-    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
-
-    }//GEN-LAST:event_btnUpdateActionPerformed
 
     private void btnSaveMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSaveMouseClicked
         // Disable the button to prevent multiple clicks
@@ -400,27 +367,6 @@ public class GuiReminder extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_btnSaveActionPerformed
 
-    private void btnDeleteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDeleteMouseClicked
-        // TODO add your handling code here:
-        int row = tabelReminder.getSelectedRow();
-        if (row == -1) {
-            JOptionPane.showMessageDialog(btnUpdate, "Choose at least 1 data", "Warning", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        
-        int idDelete = Integer.parseInt(tabelReminder.getModel().getValueAt(row, 0).toString());
-        conReminder.deleteReminder(idDelete);
-        
-        JOptionPane.showMessageDialog(null, "Data has been Deleted");
-        
-        getData();
-        refreshTable();
-    }//GEN-LAST:event_btnDeleteMouseClicked
-
-    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnDeleteActionPerformed
-
     private void tabelReminderMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelReminderMouseClicked
         // TODO add your handling code here:
         int row = tabelReminder.getSelectedRow();
@@ -445,6 +391,75 @@ public class GuiReminder extends javax.swing.JFrame {
         txtNote.setText(model.getValueAt(row, 3).toString());
     }//GEN-LAST:event_tabelReminderMouseClicked
 
+    private void jLabel7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel7MouseClicked
+        // TODO add your handling code here:
+        GuiAgenda guiAgenda = new GuiAgenda();
+        guiAgenda.setVisible(true);
+
+        dispose();
+    }//GEN-LAST:event_jLabel7MouseClicked
+
+    private void lblUpdateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblUpdateMouseClicked
+        // TODO add your handling code here:
+        int row = tabelReminder.getSelectedRow();
+        if (row == -1) {
+            JOptionPane.showMessageDialog(lblUpdate, "Choose at least 1 data", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int idUpdate = Integer.parseInt(tabelReminder.getModel().getValueAt(row, 0).toString());
+        String newTitle = txtTitle.getText();
+        Date newDate = dcDate.getDate();
+        String newDateStr = null;
+
+        if (newDate != null) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            newDateStr = dateFormat.format(newDate);
+        }
+
+        String newNote = txtNote.getText();
+
+        Reminder newReminder = new Reminder();
+        newReminder.setId_reminder(idUpdate);
+        newReminder.setTitle(newTitle);
+        newReminder.setDate(newDateStr);
+        newReminder.setNote(newNote);
+
+        // Update the reminder using the newReminder object
+        boolean updateSuccess = conReminder.updateReminder(newReminder);
+
+        if (updateSuccess) {
+            JOptionPane.showMessageDialog(null, "Data has been successfully updated");
+            getData();
+            refreshTable();
+        } else {
+            JOptionPane.showMessageDialog(null, "Failed to update data", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_lblUpdateMouseClicked
+
+    private void lblDeleteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblDeleteMouseClicked
+
+        // TODO add your handling code here:
+        int row = tabelReminder.getSelectedRow();
+        if (row == -1) {
+            JOptionPane.showMessageDialog(lblUpdate, "Choose at least 1 data", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int idDelete = Integer.parseInt(tabelReminder.getModel().getValueAt(row, 0).toString());
+        conReminder.deleteReminder(idDelete);
+
+        JOptionPane.showMessageDialog(null, "Data has been Deleted");
+
+        getData();
+        refreshTable();
+    }//GEN-LAST:event_lblDeleteMouseClicked
+
+    private void lblClearMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblClearMouseClicked
+        // TODO add your handling code here:
+        clearData();
+    }//GEN-LAST:event_lblClearMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -456,7 +471,7 @@ public class GuiReminder extends javax.swing.JFrame {
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
+                if ("Windows".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
@@ -481,10 +496,7 @@ public class GuiReminder extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnBack;
-    private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnSave;
-    private javax.swing.JButton btnUpdate;
     private com.toedter.calendar.JDateChooser dcDate;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -492,8 +504,18 @@ public class GuiReminder extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JSeparator jSeparator3;
+    private javax.swing.JSeparator jSeparator4;
+    private javax.swing.JSeparator jSeparator5;
+    private javax.swing.JLabel lblClear;
+    private javax.swing.JLabel lblDelete;
+    private javax.swing.JLabel lblUpdate;
     private javax.swing.JTable tabelReminder;
     private javax.swing.JTextField txtId;
     private javax.swing.JTextField txtNote;

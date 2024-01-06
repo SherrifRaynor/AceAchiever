@@ -5,11 +5,18 @@
 package GUI;
 
 import Controller.ControllerLogin;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
-import static javax.management.remote.JMXConnectorFactory.connect;
+import Entity.User;
+
+import java.awt.Image;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 
 import javax.swing.JOptionPane;
 
@@ -28,11 +35,37 @@ public class GuiRegister extends javax.swing.JFrame {
     public GuiRegister() {
         initComponents();
         setLocationRelativeTo(null);
+        txtImagePath.setVisible(false);
+        
+        // Add FocusListener to clear the text field when it gains focus
+        txtUsername.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                String currentText = txtUsername.getText();
+                if (currentText.equals("Username") || currentText.isEmpty()) {
+                    txtUsername.setText(null);
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                String currentText = txtUsername.getText();
+                if (currentText.isEmpty()) {
+                    txtUsername.setText("Username");
+                }
+            }
+        });
+
     }
+    
+    
 
     private void clearData() {
         txtUsername.setText("");
         txtPassword.setText("");
+        lblImage.setIcon(null);
+        pfpIcon = null;
+        pfpImage = null;
     }
 
     public void showPassword() {
@@ -55,18 +88,26 @@ public class GuiRegister extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
-        jPanel1 = new javax.swing.JPanel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        btnPageLogin = new javax.swing.JButton();
+        txtImagePath = new javax.swing.JTextField();
+        btnUpload = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        txtUsername = new javax.swing.JFormattedTextField();
+        jSeparator1 = new javax.swing.JSeparator();
+        txtPassword = new javax.swing.JPasswordField();
+        jLabel3 = new javax.swing.JLabel();
+        jSeparator2 = new javax.swing.JSeparator();
+        cbShowPass = new javax.swing.JCheckBox();
         btnRegister = new javax.swing.JToggleButton();
         btnClear = new javax.swing.JToggleButton();
-        txtUsername = new javax.swing.JFormattedTextField();
-        txtPassword = new javax.swing.JPasswordField();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        cbShowPass = new javax.swing.JCheckBox();
+        jLabel4 = new javax.swing.JLabel();
+        btnPageLogin = new javax.swing.JButton();
+        lblImage = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        jPanel3 = new javax.swing.JPanel();
 
         jMenu1.setText("File");
         jMenuBar1.add(jMenu1);
@@ -75,43 +116,74 @@ public class GuiRegister extends javax.swing.JFrame {
         jMenuBar1.add(jMenu2);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jPanel1.setBackground(new java.awt.Color(51, 59, 106));
-        jPanel1.setPreferredSize(new java.awt.Dimension(800, 600));
+        jLabel5.setIcon(new javax.swing.ImageIcon("D:\\Semester 3\\Projek UAS OOP\\ace-achiever-high-resolution-logo - Copy (1).png")); // NOI18N
+        getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 40, -1, 90));
 
-        jLabel1.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
+        jLabel6.setIcon(new javax.swing.ImageIcon("D:\\Semester 3\\Projek UAS OOP\\icons library\\Wallpaper\\gradient_img.png")); // NOI18N
+        getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 700, 210));
+
+        jPanel2.setBackground(new java.awt.Color(126, 123, 158));
+        jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabel1.setFont(new java.awt.Font("Lato", 1, 24)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Register");
+        jPanel2.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 10, -1, 50));
+        jPanel2.add(txtImagePath, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 110, 140, -1));
 
-        jLabel4.setText("Sudah Punya Akun?");
-
-        btnPageLogin.setBackground(new java.awt.Color(102, 51, 255));
-        btnPageLogin.setText("Login");
-        btnPageLogin.addActionListener(new java.awt.event.ActionListener() {
+        btnUpload.setBackground(new java.awt.Color(56, 63, 104));
+        btnUpload.setFont(new java.awt.Font("Lato", 1, 10)); // NOI18N
+        btnUpload.setIcon(new javax.swing.ImageIcon("D:\\Semester 3\\Projek UAS OOP\\icons library\\Icon Pack User Interface (Flat Gradient)\\image ( Graphic style).png")); // NOI18N
+        btnUpload.setText("Upload");
+        btnUpload.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnPageLoginActionPerformed(evt);
+                btnUploadActionPerformed(evt);
             }
         });
+        jPanel2.add(btnUpload, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 260, 100, 30));
 
-        btnRegister.setText("Register");
-        btnRegister.addActionListener(new java.awt.event.ActionListener() {
+        jLabel2.setFont(new java.awt.Font("Lato", 0, 12)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel2.setIcon(new javax.swing.ImageIcon("D:\\Semester 3\\Projek UAS OOP\\icons library\\Icon Pack User Interface (Flat Gradient)\\username 24px (Basic Rounded Filled).png")); // NOI18N
+        jPanel2.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 110, -1, 30));
+
+        txtUsername.setBackground(new java.awt.Color(126, 123, 158));
+        txtUsername.setBorder(null);
+        txtUsername.setForeground(new java.awt.Color(255, 255, 255));
+        txtUsername.setText("Username");
+        txtUsername.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRegisterActionPerformed(evt);
+                txtUsernameActionPerformed(evt);
             }
         });
+        jPanel2.add(txtUsername, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 110, 172, 24));
 
-        btnClear.setText("Clear");
-        btnClear.addActionListener(new java.awt.event.ActionListener() {
+        jSeparator1.setForeground(new java.awt.Color(0, 0, 0));
+        jPanel2.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 140, 190, 10));
+
+        txtPassword.setBackground(new java.awt.Color(126, 123, 158));
+        txtPassword.setForeground(new java.awt.Color(255, 255, 255));
+        txtPassword.setBorder(null);
+        txtPassword.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnClearActionPerformed(evt);
+                txtPasswordActionPerformed(evt);
             }
         });
+        jPanel2.add(txtPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 170, 160, 24));
 
-        jLabel2.setText("Username");
+        jLabel3.setFont(new java.awt.Font("Lato", 0, 12)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel3.setIcon(new javax.swing.ImageIcon("D:\\Semester 3\\Projek UAS OOP\\icons library\\Icon Pack User Interface (Flat Gradient)\\password 24px (UICONS).png")); // NOI18N
+        jPanel2.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 170, -1, -1));
 
-        jLabel3.setText("Password");
+        jSeparator2.setForeground(new java.awt.Color(0, 0, 0));
+        jPanel2.add(jSeparator2, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 200, 190, 10));
 
-        jLabel5.setIcon(new javax.swing.ImageIcon("D:\\Semester 3\\Projek UAS OOP\\ace-achiever-high-resolution-logo - Copy.png")); // NOI18N
-
+        cbShowPass.setBackground(new java.awt.Color(126, 123, 158));
+        cbShowPass.setFont(new java.awt.Font("Lato", 0, 10)); // NOI18N
+        cbShowPass.setForeground(new java.awt.Color(255, 255, 255));
         cbShowPass.setText("Show Password");
         cbShowPass.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -123,77 +195,59 @@ public class GuiRegister extends javax.swing.JFrame {
                 cbShowPassActionPerformed(evt);
             }
         });
+        jPanel2.add(cbShowPass, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 210, -1, -1));
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(283, 283, 283))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(292, 292, 292)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cbShowPass)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(77, 77, 77)
-                        .addComponent(btnRegister)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnClear))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(99, 99, 99)
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnPageLogin))
-                    .addComponent(jLabel2)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(txtUsername)
-                        .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jLabel3)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(109, 109, 109)
-                        .addComponent(jLabel1)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(28, 28, 28)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(cbShowPass)
-                .addGap(15, 15, 15)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnRegister)
-                    .addComponent(btnClear))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(btnPageLogin))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        btnRegister.setBackground(new java.awt.Color(56, 63, 104));
+        btnRegister.setFont(new java.awt.Font("Lato", 0, 12)); // NOI18N
+        btnRegister.setForeground(new java.awt.Color(255, 255, 255));
+        btnRegister.setText("Register");
+        btnRegister.setBorder(null);
+        btnRegister.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRegisterActionPerformed(evt);
+            }
+        });
+        jPanel2.add(btnRegister, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 250, 160, 40));
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
+        btnClear.setBackground(new java.awt.Color(126, 123, 158));
+        btnClear.setFont(new java.awt.Font("Lato", 0, 12)); // NOI18N
+        btnClear.setForeground(new java.awt.Color(0, 0, 0));
+        btnClear.setText("Clear");
+        btnClear.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        btnClear.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnClearActionPerformed(evt);
+            }
+        });
+        jPanel2.add(btnClear, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 210, 60, 20));
+
+        jLabel4.setFont(new java.awt.Font("Lato", 0, 12)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel4.setText("Already have account?");
+        jPanel2.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 300, -1, -1));
+
+        btnPageLogin.setBackground(new java.awt.Color(126, 123, 158));
+        btnPageLogin.setFont(new java.awt.Font("Lato", 0, 12)); // NOI18N
+        btnPageLogin.setForeground(new java.awt.Color(51, 59, 106));
+        btnPageLogin.setText("Login");
+        btnPageLogin.setBorder(null);
+        btnPageLogin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPageLoginActionPerformed(evt);
+            }
+        });
+        jPanel2.add(btnPageLogin, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 300, 50, -1));
+
+        lblImage.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        jPanel2.add(lblImage, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 110, 100, 140));
+
+        jPanel1.setBackground(new java.awt.Color(126, 123, 158));
+        jPanel2.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 210, 60, 20));
+
+        jPanel3.setBackground(new java.awt.Color(56, 63, 104));
+        jPanel2.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 250, 160, 40));
+
+        getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 210, 700, 540));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -213,19 +267,25 @@ public class GuiRegister extends javax.swing.JFrame {
 
         // Check if the username already exists
         if (conUser.isUsernameExists(username)) {
-            JOptionPane.showMessageDialog(null, "Username sudah digunakan. Silakan pilih username lain.", " Pesan", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Username has been used. please pick another username.", " Message", JOptionPane.ERROR_MESSAGE);
             clearData();
         } else {
             // If the username doesn't exist, proceed with registration
-            hasil = conUser.registerUser(username, password);
+            User user = new User();
+            user.setUsername(username);
+            user.setPassword(password);
+            user.setProfile_picture(pfpImage);
+
+            // If the username doesn't exist, proceed with registration
+            hasil = conUser.registerUser(user);
 
             if (hasil) {
-                JOptionPane.showMessageDialog(null, "Akun berhasil dibuat");
+                JOptionPane.showMessageDialog(null, "Account successfully created");
                 clearData();
                 btnPageLoginActionPerformed(evt);
                 dispose();
             } else {
-                JOptionPane.showMessageDialog(null, "Akun gagal dibuat", " Pesan", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Account failed to be created", "Message", JOptionPane.ERROR_MESSAGE);
                 clearData();
             }
         }
@@ -247,6 +307,40 @@ public class GuiRegister extends javax.swing.JFrame {
         showPassword();
     }//GEN-LAST:event_cbShowPassActionPerformed
 
+    private void txtUsernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtUsernameActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtUsernameActionPerformed
+
+    private void btnUploadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUploadActionPerformed
+        // TODO add your handling code here:
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.showOpenDialog(null);
+        File file = fileChooser.getSelectedFile();
+
+        if (file != null) {
+            namaFilePhoto = file.getAbsolutePath();
+            txtImagePath.setText(namaFilePhoto);
+
+            try {
+                // Read image file and convert it to byte array
+                BufferedImage originalImage = ImageIO.read(file);
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                ImageIO.write(originalImage, "jpeg", bos);
+                pfpImage = bos.toByteArray();
+
+                // Display the selected image
+                ImageIcon scaledImageIcon = new ImageIcon(originalImage.getScaledInstance(lblImage.getWidth(), lblImage.getHeight(), Image.SCALE_SMOOTH));
+                lblImage.setIcon(scaledImageIcon);
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(null, "Error reading the image file.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_btnUploadActionPerformed
+
+    private void txtPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPasswordActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtPasswordActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -258,7 +352,7 @@ public class GuiRegister extends javax.swing.JFrame {
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
+                if ("Windows".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
@@ -301,17 +395,28 @@ public class GuiRegister extends javax.swing.JFrame {
     private javax.swing.JToggleButton btnClear;
     private javax.swing.JButton btnPageLogin;
     private javax.swing.JToggleButton btnRegister;
+    private javax.swing.JButton btnUpload;
     private javax.swing.JCheckBox cbShowPass;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JLabel lblImage;
+    private javax.swing.JTextField txtImagePath;
     private javax.swing.JPasswordField txtPassword;
     private javax.swing.JFormattedTextField txtUsername;
     // End of variables declaration//GEN-END:variables
+    String namaFilePhoto = null;
+    private ImageIcon pfpIcon = null;
+    byte[] pfpImage = null;
 }

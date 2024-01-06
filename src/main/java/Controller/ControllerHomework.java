@@ -38,13 +38,12 @@ public class ControllerHomework {
     }
 
     // Retrieve all homeworks for a specific user and subject
-    public List<Homework> getAllHomeworks(int id_akun, int id_subject) {
+    public List<Homework> getAllHomeworks(int id_akun) {
         List<Homework> homeworks = new ArrayList<>();
 
         try (PreparedStatement statement = connect.prepareStatement(
-                "SELECT * FROM homework WHERE id_akun = ? AND id_subject = ?")) {
+                "SELECT * FROM homework WHERE id_akun = ?")) {
             statement.setInt(1, id_akun);
-            statement.setInt(2, id_subject);
 
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
@@ -103,6 +102,29 @@ public class ControllerHomework {
         } catch (SQLException ex) {
             System.out.println(ex.toString());
             return false;
+        }
+    }
+
+    public String getSubjectNameById(int id_akun, int id_subject) {
+        String query = "SELECT name FROM subject WHERE id_akun = ? AND id_subject =?";
+
+        try (PreparedStatement preparedStatement = connect.prepareStatement(query)) {
+            preparedStatement.setInt(1, id_akun);
+            preparedStatement.setInt(2, id_subject);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                return resultSet.getString("name");
+            } else {
+                // Handle the case where the subject with the given title is not found
+                System.out.println("Name not found for id: " + id_subject);
+                return "N/A"; // Or throw an exception, return a default value, etc.
+            }
+
+        } catch (Exception e) {
+            System.out.println(e.toString());
+            return "N/A"; // Or throw an exception, return a default value, etc.
         }
     }
 

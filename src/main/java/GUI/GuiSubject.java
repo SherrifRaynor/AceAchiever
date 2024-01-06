@@ -7,9 +7,12 @@ package GUI;
 import Controller.ControllerSubject;
 import Utilities.UserSessionManager;
 import Entity.Subject;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 /**
  *
@@ -17,7 +20,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class GuiSubject extends javax.swing.JFrame {
 
-    private ControllerSubject controllerSubject;
+    ControllerSubject conSubject = new ControllerSubject();
     private DefaultTableModel model;
 
     /**
@@ -26,28 +29,79 @@ public class GuiSubject extends javax.swing.JFrame {
     public GuiSubject() {
         initComponents();
         setLocationRelativeTo(null);
-
-        // Initialize the ControllerSubject instance
-        controllerSubject = new ControllerSubject();
-
+        
         // Initialize the table model
-        model = new DefaultTableModel();
-        tabelSubject.setModel(model);
-        model.addColumn("Nama");
-        model.addColumn("Bobot");
-        model.addColumn("Ruangan");
+        model = (DefaultTableModel) tabelSubject.getModel();
 
-        // Refresh the table with the latest data
+        getData();
         refreshTable();
 
+        // Add FocusListener to clear the text field when it gains focus
+        txtName.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                String currentText = txtName.getText();
+                if (currentText.equals("Add a name") || currentText.isEmpty()) {
+                    txtName.setText(null);
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                String currentText = txtName.getText();
+                if (currentText.isEmpty()) {
+                    txtName.setText("Add a name");
+                }
+            }
+        });
+
+        txtWeight.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                String currentText = txtWeight.getText();
+                if (currentText.equals("Add a weight") || currentText.isEmpty()) {
+                    txtWeight.setText(null);
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                String currentText = txtWeight.getText();
+                if (currentText.isEmpty()) {
+                    txtWeight.setText("Add a weight");
+                }
+            }
+
+        });
+        
+        txtRoom.addFocusListener(new FocusListener(){
+            @Override
+            public void focusGained(FocusEvent e) {
+                String currentText = txtRoom.getText();
+                if (currentText.equals("Add a room") || currentText.isEmpty()) {
+                    txtRoom.setText(null);
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                String currentText = txtRoom.getText();
+                if (currentText.isEmpty()) {
+                    txtRoom.setText("Add a room");
+                }
+            }
+        
+    });
+        tabelSubject.setRowHeight(40);
+        
+
     }
-    
-    
-    
+
     private void clearData() {
-        txtNama.setText("");
-        txtBobot.setText("");
-        txtRuangan.setText("");
+        txtId.setText("");
+        txtName.setText("");
+        txtWeight.setText("");
+        txtRoom.setText("");
     }
 
     // Refresh the table with the latest data
@@ -56,15 +110,33 @@ public class GuiSubject extends javax.swing.JFrame {
         model.setRowCount(0);
 
         // Get the current user's id_akun
-        int id_akun = UserSessionManager.getCurrentUserId();
+        int userId = UserSessionManager.getCurrentUserId();
 
-        // Retrieve all subjects for the specific user
-        List<Subject> subjects = controllerSubject.getAllSubjects(id_akun);
+        List<Subject> listSubject = conSubject.getAllSubjects(userId);
 
-        // Add the subjects to the table model
-        for (Subject subject : subjects) {
-            Object[] rowData = {subject.getNama(), subject.getBobot(), subject.getRuangan()};
+        for (Subject subject : listSubject) {
+            Object[] rowData = {subject.getId_subject(), subject.getName(), subject.getWeight(), subject.getRoom()};
             model.addRow(rowData);
+        }
+    }
+
+    private void getData() {
+        DefaultTableModel dtm = (DefaultTableModel) tabelSubject.getModel();
+
+        dtm.setRowCount(0);
+
+        // Get the current user's id_akun
+        int userId = UserSessionManager.getCurrentUserId();
+
+        List<Subject> listSubject = conSubject.getAllSubjects(userId);
+        String[] data = new String[5];
+        for (Subject newSubject : listSubject) {
+            data[0] = Integer.toString(newSubject.getId_subject());
+            data[1] = newSubject.getName();
+            data[2] = Integer.toString(newSubject.getWeight());
+            data[3] = newSubject.getRoom();
+            dtm.addRow(data);
+
         }
     }
 
@@ -78,163 +150,216 @@ public class GuiSubject extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        txtNama = new javax.swing.JTextField();
+        txtName = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        txtBobot = new javax.swing.JTextField();
-        txtRuangan = new javax.swing.JTextField();
-        btnSubmit = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        txtWeight = new javax.swing.JTextField();
+        txtRoom = new javax.swing.JTextField();
+        btnSave = new javax.swing.JButton();
+        jLabel5 = new javax.swing.JLabel();
+        txtId = new javax.swing.JTextField();
+        jScrollPane2 = new javax.swing.JScrollPane();
         tabelSubject = new javax.swing.JTable();
-        btnBack = new javax.swing.JButton();
+        lblBack = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jSeparator1 = new javax.swing.JSeparator();
+        jSeparator2 = new javax.swing.JSeparator();
+        jSeparator3 = new javax.swing.JSeparator();
+        jSeparator4 = new javax.swing.JSeparator();
+        jSeparator5 = new javax.swing.JSeparator();
+        jSeparator6 = new javax.swing.JSeparator();
+        lblUpdate = new javax.swing.JLabel();
+        lblDelete = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        lblClear = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jPanel1.setBackground(new java.awt.Color(102, 0, 204));
+        jPanel1.setBackground(new java.awt.Color(126, 123, 158));
         jPanel1.setPreferredSize(new java.awt.Dimension(800, 600));
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        jLabel1.setFont(new java.awt.Font("Lato", 1, 24)); // NOI18N
         jLabel1.setText("Subject");
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1420, 24, -1, -1));
 
-        jLabel2.setText("nama");
+        jLabel2.setFont(new java.awt.Font("Lato", 0, 12)); // NOI18N
+        jLabel2.setIcon(new javax.swing.ImageIcon("D:\\Semester 3\\Projek UAS OOP\\icons library\\Icon Pack User Interface (Flat Gradient)\\subject 24px (Mikan933 Detailed outline).png")); // NOI18N
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 140, -1, -1));
 
-        txtNama.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtNamaActionPerformed(evt);
+        txtName.setBackground(new java.awt.Color(126, 123, 158));
+        txtName.setFont(new java.awt.Font("Lato", 0, 12)); // NOI18N
+        txtName.setText("Add a name");
+        txtName.setBorder(null);
+        txtName.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtNameFocusGained(evt);
             }
         });
-
-        jLabel3.setText("bobot");
-
-        jLabel4.setText("ruangan");
-
-        txtBobot.addActionListener(new java.awt.event.ActionListener() {
+        txtName.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtBobotActionPerformed(evt);
+                txtNameActionPerformed(evt);
             }
         });
+        jPanel1.add(txtName, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 140, 300, 30));
 
-        txtRuangan.addActionListener(new java.awt.event.ActionListener() {
+        jLabel3.setFont(new java.awt.Font("Lato", 0, 12)); // NOI18N
+        jLabel3.setIcon(new javax.swing.ImageIcon("D:\\Semester 3\\Projek UAS OOP\\icons library\\Icon Pack User Interface (Flat Gradient)\\weight 24px ( Good Ware Lineal).png")); // NOI18N
+        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 200, -1, -1));
+
+        jLabel4.setFont(new java.awt.Font("Lato", 0, 12)); // NOI18N
+        jLabel4.setIcon(new javax.swing.ImageIcon("D:\\Semester 3\\Projek UAS OOP\\icons library\\Icon Pack User Interface (Flat Gradient)\\room 24px (Hexompal Thin Outline).png")); // NOI18N
+        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 260, -1, -1));
+
+        txtWeight.setBackground(new java.awt.Color(126, 123, 158));
+        txtWeight.setFont(new java.awt.Font("Lato", 0, 12)); // NOI18N
+        txtWeight.setText("Add a weight");
+        txtWeight.setBorder(null);
+        txtWeight.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtRuanganActionPerformed(evt);
+                txtWeightActionPerformed(evt);
             }
         });
+        jPanel1.add(txtWeight, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 200, 300, 30));
 
-        btnSubmit.setText("Submit");
-        btnSubmit.addMouseListener(new java.awt.event.MouseAdapter() {
+        txtRoom.setBackground(new java.awt.Color(126, 123, 158));
+        txtRoom.setText("Add a room");
+        txtRoom.setBorder(null);
+        txtRoom.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtRoomActionPerformed(evt);
+            }
+        });
+        jPanel1.add(txtRoom, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 260, 300, 30));
+
+        btnSave.setBackground(new java.awt.Color(56, 63, 104));
+        btnSave.setFont(new java.awt.Font("Lato", 0, 12)); // NOI18N
+        btnSave.setForeground(new java.awt.Color(0, 0, 0));
+        btnSave.setText("Save");
+        btnSave.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnSubmitMouseClicked(evt);
+                btnSaveMouseClicked(evt);
             }
         });
-        btnSubmit.addActionListener(new java.awt.event.ActionListener() {
+        btnSave.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSubmitActionPerformed(evt);
+                btnSaveActionPerformed(evt);
             }
         });
+        jPanel1.add(btnSave, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 20, -1, 30));
+
+        jLabel5.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
+        jLabel5.setText("ID");
+        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 80, -1, -1));
+
+        txtId.setEditable(false);
+        txtId.setBackground(new java.awt.Color(126, 123, 158));
+        txtId.setFont(new java.awt.Font("Lato", 0, 12)); // NOI18N
+        txtId.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jPanel1.add(txtId, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 80, 50, 20));
 
         tabelSubject.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
             },
             new String [] {
-                "Nama", "Bobot", "Ruangan"
+                "ID", "Name", "Weight", "Room"
             }
         ));
-        jScrollPane1.setViewportView(tabelSubject);
-
-        btnBack.setText("<-Back");
-        btnBack.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnBackActionPerformed(evt);
+        tabelSubject.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tabelSubjectMouseClicked(evt);
             }
         });
+        jScrollPane2.setViewportView(tabelSubject);
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(17, 17, 17)
-                .addComponent(btnBack)
-                .addGap(290, 290, 290)
-                .addComponent(jLabel1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(136, 136, 136)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel4)
-                    .addComponent(btnSubmit)
-                    .addComponent(txtNama)
-                    .addComponent(txtBobot)
-                    .addComponent(txtRuangan))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(56, 56, 56))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel1)
-                    .addComponent(btnBack))
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(91, 91, 91)
-                        .addComponent(jLabel2)
-                        .addGap(18, 18, 18)
-                        .addComponent(txtNama, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel3)
-                        .addGap(17, 17, 17)
-                        .addComponent(txtBobot, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel4)
-                        .addGap(18, 18, 18)
-                        .addComponent(txtRuangan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(47, 47, 47)
-                        .addComponent(btnSubmit))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(69, 69, 69)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 390, 698, 360));
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
+        lblBack.setIcon(new javax.swing.ImageIcon("D:\\Semester 3\\Projek UAS OOP\\icons library\\Icon Pack User Interface (Flat Gradient)\\back icon (bharat icons basic).png")); // NOI18N
+        lblBack.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblBackMouseClicked(evt);
+            }
+        });
+        jPanel1.add(lblBack, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 10, -1, -1));
+
+        jLabel6.setFont(new java.awt.Font("Lato", 1, 24)); // NOI18N
+        jLabel6.setText("Subject");
+        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 10, -1, -1));
+
+        jSeparator1.setForeground(new java.awt.Color(250, 236, 226));
+        jPanel1.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 180, 300, 10));
+
+        jSeparator2.setForeground(new java.awt.Color(250, 236, 226));
+        jPanel1.add(jSeparator2, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 300, 400, 10));
+
+        jSeparator3.setForeground(new java.awt.Color(250, 236, 226));
+        jPanel1.add(jSeparator3, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 240, 300, 10));
+
+        jSeparator4.setForeground(new java.awt.Color(250, 236, 226));
+        jPanel1.add(jSeparator4, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 70, 400, 10));
+
+        jSeparator5.setForeground(new java.awt.Color(250, 236, 226));
+        jPanel1.add(jSeparator5, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 120, 300, 10));
+
+        jSeparator6.setForeground(new java.awt.Color(250, 236, 226));
+        jPanel1.add(jSeparator6, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 120, 300, 10));
+
+        lblUpdate.setIcon(new javax.swing.ImageIcon("D:\\Semester 3\\Projek UAS OOP\\icons library\\Icon Pack User Interface (Flat Gradient)\\pencil 24px(special flat).png")); // NOI18N
+        lblUpdate.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblUpdateMouseClicked(evt);
+            }
+        });
+        jPanel1.add(lblUpdate, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 340, -1, -1));
+
+        lblDelete.setIcon(new javax.swing.ImageIcon("D:\\Semester 3\\Projek UAS OOP\\icons library\\Icon Pack User Interface (Flat Gradient)\\trash 24px( bqlqn lineal).png")); // NOI18N
+        lblDelete.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblDeleteMouseClicked(evt);
+            }
+        });
+        jPanel1.add(lblDelete, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 340, -1, -1));
+
+        jLabel7.setIcon(new javax.swing.ImageIcon("D:\\Semester 3\\Projek UAS OOP\\icons library\\Stickers\\Subjects 257px (Generic Stiker Color Fill).png")); // NOI18N
+        jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 60, -1, -1));
+
+        lblClear.setBackground(new java.awt.Color(126, 123, 158));
+        lblClear.setForeground(new java.awt.Color(0, 0, 0));
+        lblClear.setIcon(new javax.swing.ImageIcon("D:\\Semester 3\\Projek UAS OOP\\icons library\\Icon Pack User Interface (Flat Gradient)\\Clear 24px.png")); // NOI18N
+        lblClear.setText("Clear Field");
+        lblClear.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        lblClear.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblClearMouseClicked(evt);
+            }
+        });
+        jPanel1.add(lblClear, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 20, 90, -1));
+
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 700, 750));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnSubmitMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSubmitMouseClicked
+    private void btnSaveMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSaveMouseClicked
 
         // Disable the button to prevent multiple clicks
-        btnSubmit.setEnabled(false);
+        btnSave.setEnabled(false);
 
         // Collect data from text fields
-        String nama = txtNama.getText();
-        int bobot = Integer.parseInt(txtBobot.getText());
-        String ruangan = txtRuangan.getText();
+        String name = txtName.getText();
+        int weight = Integer.parseInt(txtWeight.getText());
+        String room = txtRoom.getText();
 
         // Get the current user's id_akun
         int id_akun = UserSessionManager.getCurrentUserId();
 
         // Create a Subject object
-        Subject subject = new Subject(id_akun, nama, bobot, ruangan);
+        Subject subject = new Subject(id_akun, name, weight, room);
 
         // Create an instance of ControllerSubject
         ControllerSubject controllerSubject = new ControllerSubject();
@@ -255,33 +380,101 @@ public class GuiSubject extends javax.swing.JFrame {
         }
 
         // Enable the button after the operation is complete
-        btnSubmit.setEnabled(true);
-        
+        btnSave.setEnabled(true);
+
         clearData();
-    }//GEN-LAST:event_btnSubmitMouseClicked
+    }//GEN-LAST:event_btnSaveMouseClicked
 
-    private void txtNamaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNamaActionPerformed
+    private void txtNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNameActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtNamaActionPerformed
+    }//GEN-LAST:event_txtNameActionPerformed
 
-    private void txtBobotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBobotActionPerformed
+    private void txtWeightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtWeightActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtBobotActionPerformed
+    }//GEN-LAST:event_txtWeightActionPerformed
 
-    private void txtRuanganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtRuanganActionPerformed
+    private void txtRoomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtRoomActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtRuanganActionPerformed
+    }//GEN-LAST:event_txtRoomActionPerformed
 
-    private void btnSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitActionPerformed
+    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnSubmitActionPerformed
+    }//GEN-LAST:event_btnSaveActionPerformed
 
-    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
+    private void tabelSubjectMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelSubjectMouseClicked
+        // TODO add your handling code here:
+        int row = tabelSubject.getSelectedRow();
+
+        TableModel model = tabelSubject.getModel();
+        txtId.setText(model.getValueAt(row, 0).toString());
+        txtName.setText(model.getValueAt(row, 1).toString());
+        txtWeight.setText(model.getValueAt(row, 2).toString());
+        txtRoom.setText(model.getValueAt(row, 3).toString());
+
+
+    }//GEN-LAST:event_tabelSubjectMouseClicked
+
+    private void txtNameFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtNameFocusGained
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtNameFocusGained
+
+    private void lblBackMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblBackMouseClicked
+        // TODO add your handling code here:
         GuiMainMenu guiMainMenu = new GuiMainMenu();
         guiMainMenu.setVisible(true);
 
         dispose();
-    }//GEN-LAST:event_btnBackActionPerformed
+    }//GEN-LAST:event_lblBackMouseClicked
+
+    private void lblDeleteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblDeleteMouseClicked
+        // TODO add your handling code here:
+        int row = tabelSubject.getSelectedRow();
+        if (row == -1) {
+            JOptionPane.showMessageDialog(lblUpdate, "Choose at least 1 data", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        int idDelete = Integer.parseInt(tabelSubject.getModel().getValueAt(row, 0).toString());
+        conSubject.deleteSubject(idDelete);
+
+        JOptionPane.showMessageDialog(null, "Data has been Deleted");
+
+        getData();
+        refreshTable();
+    }//GEN-LAST:event_lblDeleteMouseClicked
+
+    private void lblUpdateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblUpdateMouseClicked
+        // TODO add your handling code here:
+        int row = tabelSubject.getSelectedRow();
+        if (row == -1) {
+            JOptionPane.showMessageDialog(lblUpdate, "Choose at least 1 data", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        int idUpdate = Integer.parseInt(tabelSubject.getModel().getValueAt(row, 0).toString());
+        String newName = txtName.getText();
+        int newWeight = Integer.parseInt(txtWeight.getText());
+        String newRoom = txtRoom.getText();
+
+        Subject newSubject = new Subject();
+        newSubject.setId_subject(idUpdate);
+        newSubject.setName(newName);
+        newSubject.setWeight(newWeight);
+        newSubject.setRoom(newRoom);
+
+        boolean success = conSubject.updateSubject(newSubject);
+
+        if (success) {
+            JOptionPane.showMessageDialog(null, "Data has been successfully updated");
+            getData();
+            refreshTable();
+        } else {
+            JOptionPane.showMessageDialog(null, "Failed to update data", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_lblUpdateMouseClicked
+
+    private void lblClearMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblClearMouseClicked
+        // TODO add your handling code here:
+        clearData();
+    }//GEN-LAST:event_lblClearMouseClicked
 
     /**
      * @param args the command line arguments
@@ -294,19 +487,27 @@ public class GuiSubject extends javax.swing.JFrame {
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
+                if ("Windows".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
+
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(GuiSubject.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GuiSubject.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(GuiSubject.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GuiSubject.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(GuiSubject.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GuiSubject.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(GuiSubject.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GuiSubject.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
         //</editor-fold>
@@ -350,17 +551,30 @@ public class GuiSubject extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnBack;
-    private javax.swing.JButton btnSubmit;
+    private javax.swing.JButton btnSave;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JSeparator jSeparator3;
+    private javax.swing.JSeparator jSeparator4;
+    private javax.swing.JSeparator jSeparator5;
+    private javax.swing.JSeparator jSeparator6;
+    private javax.swing.JLabel lblBack;
+    private javax.swing.JLabel lblClear;
+    private javax.swing.JLabel lblDelete;
+    private javax.swing.JLabel lblUpdate;
     private javax.swing.JTable tabelSubject;
-    private javax.swing.JTextField txtBobot;
-    private javax.swing.JTextField txtNama;
-    private javax.swing.JTextField txtRuangan;
+    private javax.swing.JTextField txtId;
+    private javax.swing.JTextField txtName;
+    private javax.swing.JTextField txtRoom;
+    private javax.swing.JTextField txtWeight;
     // End of variables declaration//GEN-END:variables
 }
