@@ -14,7 +14,6 @@ import java.util.List;
  * @author sherr
  */
 public class ControllerReminder {
-
     ConnectionManager conMan = new ConnectionManager();
     Connection connect = conMan.LogOn();
 
@@ -97,5 +96,4 @@ public class ControllerReminder {
             return false;
         }
     }
-
 }
