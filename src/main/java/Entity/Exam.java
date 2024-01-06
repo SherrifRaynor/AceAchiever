@@ -80,7 +80,4 @@ public class Exam {
     public void setNote(String note) {
         this.note = note;
     }
-    
-     
-    
 }
