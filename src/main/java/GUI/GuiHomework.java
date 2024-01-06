@@ -70,7 +70,7 @@ public class GuiHomework extends javax.swing.JFrame {
         int userId = UserSessionManager.getCurrentUserId();
         int subjectId = SubjectSessionManager.getCurrentSubjectId();
 
-        List<Homework> listHomework = conHomework.getAllHomeworks(userId, subjectId);
+        List<Homework> listHomework = conHomework.getAllHomeworks(userId);
 
         for (Homework newHomework : listHomework) {
             Object[] data = {
@@ -101,7 +101,7 @@ public class GuiHomework extends javax.swing.JFrame {
         int subjectId = SubjectSessionManager.getCurrentSubjectId();
 
         // Retrieve all reminders for the specific user
-        List<Homework> homeworks = conHomework.getAllHomeworks(userId, subjectId);
+        List<Homework> homeworks = conHomework.getAllHomeworks(userId);
 
         // Add the reminders to the table model
         for (Homework homework : homeworks) {
