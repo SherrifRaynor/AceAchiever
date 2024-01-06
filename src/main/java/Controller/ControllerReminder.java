@@ -26,7 +26,7 @@ public class ControllerReminder {
             statement.setString(3, reminder.getDate());
             statement.setString(4, reminder.getNote());
 
-            int rowsAffected = statement.executeUpdate(); 
+            int rowsAffected = statement.executeUpdate();
             return rowsAffected > 0;
         } catch (SQLException e) {
             e.printStackTrace();
